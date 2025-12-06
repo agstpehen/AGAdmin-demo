@@ -294,15 +294,7 @@ The admin panel is fully responsive and works on:
 4. Test thoroughly
 5. Submit a pull request
 
-## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Support
-
-- Documentation: [Wiki](https://github.com/yourusername/agadmin/wiki)
-- Issues: [GitHub Issues](https://github.com/yourusername/agadmin/issues)
-- Discussions: [GitHub Discussions](https://github.com/yourusername/agadmin/discussions)
 
 ## 🎯 Roadmap
 
@@ -331,11 +323,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Font Awesome for icons
 - All contributors and users
 
-## 📞 Contact
-
-- Email: support@agadmin.com
-- Website: https://www.agadmin.com
-- Twitter: @AGAdmin
 
 ---
 
