@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Management - AGAdmin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Charts replaced with CSS-based simple charts -->
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .navbar {
+            background: white !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .payroll-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .summary-item h3 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .summary-item p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .employee-item {
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .employee-item.active {
+            border-left-color: #28a745;
+        }
+        
+        .employee-item.inactive {
+            border-left-color: #dc3545;
+        }
+        
+        .employee-item.pending {
+            border-left-color: #ffc107;
+        }
+        
+        .salary-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .deduction-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #6f42c1;
+        }
+        
+        .benefit-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #fd7e14;
+        }
+        
+        .payroll-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #20c997;
+        }
+        
+        .report-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #e83e8c;
+        }
+        
+        .tab-content {
+            padding: 20px 0;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+        
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-buttons {
+            margin: 20px 0;
+        }
+        
+        .action-buttons .btn {
+            margin: 5px;
+        }
+        
+        .amount-positive {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .amount-negative {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .amount-neutral {
+            color: #6c757d;
+            font-weight: bold;
+        }
+        
+        .payroll-calculation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .calculation-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .calculation-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .calculation-row.total {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-tachometer-alt"></i> AGAdmin</h3>
+            <button type="button" id="sidebarCollapse" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <ul class="list-unstyled components">
+            <!-- Dashboard -->
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            
+            <!-- User Management -->
+            <li>
+                <a href="#userManagement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-users"></i> User Management
+                </a>
+                <ul class="collapse list-unstyled" id="userManagement">
+                    <li><a href="users.html">Users</a></li>
+                    <li><a href="roles.html">Roles</a></li>
+                    <li><a href="permissions.html">Permissions</a></li>
+                </ul>
+            </li>
+            
+            <!-- Master Data -->
+            <li>
+                <a href="#masterData" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-database"></i> Master Data
+                </a>
+                <ul class="collapse list-unstyled" id="masterData">
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="territories.html">Territories</a></li>
+                    <li><a href="stores.html">Stores</a></li>
+                </ul>
+            </li>
+            
+            <!-- Business Modules -->
+            <li>
+                <a href="#business" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-briefcase"></i> Business Modules
+                </a>
+                <ul class="collapse list-unstyled" id="business">
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="customers.html">Customers</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="hr.html">HR Management</a></li>
+                </ul>
+            </li>
+            
+            <!-- Finance & Payroll -->
+            <li class="active">
+                <a href="#finance" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-chart-line"></i> Finance & Payroll
+                </a>
+                <ul class="collapse list-unstyled" id="finance">
+                    <li><a href="finance.html">Finance</a></li>
+                    <li><a href="payroll.html">Payroll</a></li>
+                </ul>
+            </li>
+            
+            <!-- Leave Management -->
+            <li>
+                <a href="leave-management.html">
+                    <i class="fas fa-calendar-alt"></i> Leave Management
+                </a>
+            </li>
+            
+            <!-- Ticketing System -->
+            <li>
+                <a href="ticketing.html">
+                    <i class="fas fa-ticket-alt"></i> Ticketing System
+                </a>
+            </li>
+            
+            <!-- Reports -->
+            <li>
+                <a href="reports.html">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+            </li>
+            
+            <!-- Communication -->
+            <li>
+                <a href="#communication" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-comments"></i> Communication
+                </a>
+                <ul class="collapse list-unstyled" id="communication">
+                    <li><a href="notifications.html">Notifications</a></li>
+                    <li><a href="messages.html">Messages</a></li>
+                    <li><a href="announcements.html">Announcements</a></li>
+                </ul>
+            </li>
+            
+            <!-- Settings -->
+            <li>
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            
+            <!-- Audit Logs -->
+            <li>
+                <a href="audit-logs.html">
+                    <i class="fas fa-history"></i> Audit Logs
+                </a>
+            </li>
+            
+            <!-- UI Components -->
+            <li>
+                <a href="ui-components.html">
+                    <i class="fas fa-palette"></i> UI Components
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <!-- Page Content -->
+    <div id="content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-info">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="navbar-nav ms-auto">
+                    <!-- Dark Mode Toggle -->
+                    <div class="nav-item me-3">
+                        <button class="btn btn-outline-secondary" id="darkModeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Language Selector -->
+                    <div class="nav-item me-3">
+                        <select class="form-select form-select-sm" id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="nav-item dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger" id="notificationCount">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+                            <li><a class="dropdown-item" href="#">Payroll processed</a></li>
+                            <li><a class="dropdown-item" href="#">Salary updated</a></li>
+                            <li><a class="dropdown-item" href="#">Payroll approval needed</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="assets/images/avatar.jpg" alt="User" class="rounded-circle" width="30" height="30">
+                            <span class="ms-2">Admin User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-money-check-alt"></i> Payroll Management</h2>
+            <div>
+                <button class="btn btn-success btn-sm me-2" onclick="processPayroll()">
+                    <i class="fas fa-play"></i> Process Payroll
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="generatePayrollReport()">
+                    <i class="fas fa-file-pdf"></i> Generate Report
+                </button>
+            </div>
+        </div>
+        
+        <!-- Payroll Summary -->
+        <div class="payroll-summary">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="summary-item">
+                        <h3>25</h3>
+                        <p>Total Employees</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="summary-item">
+                        <h3>$125,000</h3>
+                        <p>Total Payroll</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="summary-item">
+                        <h3>$18,750</h3>
+                        <p>Total Deductions</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="summary-item">
+                        <h3>$106,250</h3>
+                        <p>Net Pay</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="payPeriod" class="form-label">Pay Period</label>
+                    <select class="form-select" id="payPeriod">
+                        <option value="current">Current Period</option>
+                        <option value="last">Last Period</option>
+                        <option value="month">This Month</option>
+                        <option value="quarter">This Quarter</option>
+                        <option value="year">This Year</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="departmentFilter" class="form-label">Department</label>
+                    <select class="form-select" id="departmentFilter">
+                        <option value="">All Departments</option>
+                        <option value="hr">Human Resources</option>
+                        <option value="it">Information Technology</option>
+                        <option value="sales">Sales</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="finance">Finance</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="statusFilter" class="form-label">Status</label>
+                    <select class="form-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="employeeFilter" class="form-label">Employee</label>
+                    <select class="form-select" id="employeeFilter">
+                        <option value="">All Employees</option>
+                        <option value="john">John Doe</option>
+                        <option value="jane">Jane Smith</option>
+                        <option value="mike">Mike Johnson</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                        <i class="fas fa-times"></i> Clear Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="payrollTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                    <i class="fas fa-chart-pie"></i> Overview
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="employees-tab" data-bs-toggle="tab" data-bs-target="#employees" type="button" role="tab">
+                    <i class="fas fa-users"></i> Employees
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="salaries-tab" data-bs-toggle="tab" data-bs-target="#salaries" type="button" role="tab">
+                    <i class="fas fa-dollar-sign"></i> Salaries
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="deductions-tab" data-bs-toggle="tab" data-bs-target="#deductions" type="button" role="tab">
+                    <i class="fas fa-minus-circle"></i> Deductions
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="benefits-tab" data-bs-toggle="tab" data-bs-target="#benefits" type="button" role="tab">
+                    <i class="fas fa-heart"></i> Benefits
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="payroll-tab" data-bs-toggle="tab" data-bs-target="#payroll" type="button" role="tab">
+                    <i class="fas fa-money-check"></i> Payroll
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </button>
+            </li>
+        </ul>
+        
+        <!-- Tab Content -->
+        <div class="tab-content" id="payrollTabsContent">
+            <!-- Overview Tab -->
+            <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Payroll Trends</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="payrollTrendsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Department Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="departmentChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Salary Ranges</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="salaryRangesChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Deduction Breakdown</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="deductionBreakdownChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Employees Tab -->
+            <div class="tab-pane fade" id="employees" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="addEmployee()">
+                        <i class="fas fa-plus"></i> Add Employee
+                    </button>
+                    <button class="btn btn-info" onclick="importEmployees()">
+                        <i class="fas fa-upload"></i> Import Employees
+                    </button>
+                    <button class="btn btn-warning" onclick="exportEmployees()">
+                        <i class="fas fa-download"></i> Export Employees
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Employee List</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="employee-item active">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>John Doe</h6>
+                                    <p class="text-muted mb-0">Senior Developer - IT Department</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Employee ID: EMP001</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$8,500.00</span>
+                                    <p class="text-muted mb-0">Monthly Salary</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="employee-item active">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Jane Smith</h6>
+                                    <p class="text-muted mb-0">HR Manager - Human Resources</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Employee ID: EMP002</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$7,200.00</span>
+                                    <p class="text-muted mb-0">Monthly Salary</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="employee-item active">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Mike Johnson</h6>
+                                    <p class="text-muted mb-0">Sales Representative - Sales</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Employee ID: EMP003</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$6,000.00</span>
+                                    <p class="text-muted mb-0">Monthly Salary</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="employee-item pending">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Sarah Wilson</h6>
+                                    <p class="text-muted mb-0">Marketing Specialist - Marketing</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-warning">Pending</span>
+                                    <p class="text-muted mb-0">Employee ID: EMP004</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$5,500.00</span>
+                                    <p class="text-muted mb-0">Monthly Salary</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="employee-item inactive">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>David Brown</h6>
+                                    <p class="text-muted mb-0">Accountant - Finance</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-danger">Inactive</span>
+                                    <p class="text-muted mb-0">Employee ID: EMP005</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$6,800.00</span>
+                                    <p class="text-muted mb-0">Monthly Salary</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Salaries Tab -->
+            <div class="tab-pane fade" id="salaries" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="addSalary()">
+                        <i class="fas fa-plus"></i> Add Salary
+                    </button>
+                    <button class="btn btn-info" onclick="adjustSalaries()">
+                        <i class="fas fa-edit"></i> Adjust Salaries
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Salary Structure</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="salary-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>John Doe - Senior Developer</h6>
+                                    <p class="text-muted mb-0">IT Department</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-primary">Full-time</span>
+                                    <p class="text-muted mb-0">40 hours/week</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$8,500.00</span>
+                                    <p class="text-muted mb-0">Monthly</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="salary-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Jane Smith - HR Manager</h6>
+                                    <p class="text-muted mb-0">Human Resources</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-primary">Full-time</span>
+                                    <p class="text-muted mb-0">40 hours/week</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$7,200.00</span>
+                                    <p class="text-muted mb-0">Monthly</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="salary-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Mike Johnson - Sales Rep</h6>
+                                    <p class="text-muted mb-0">Sales Department</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-primary">Full-time</span>
+                                    <p class="text-muted mb-0">40 hours/week</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$6,000.00</span>
+                                    <p class="text-muted mb-0">Monthly</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="salary-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Sarah Wilson - Marketing Specialist</h6>
+                                    <p class="text-muted mb-0">Marketing Department</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Part-time</span>
+                                    <p class="text-muted mb-0">20 hours/week</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$5,500.00</span>
+                                    <p class="text-muted mb-0">Monthly</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="salary-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>David Brown - Accountant</h6>
+                                    <p class="text-muted mb-0">Finance Department</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-primary">Full-time</span>
+                                    <p class="text-muted mb-0">40 hours/week</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$6,800.00</span>
+                                    <p class="text-muted mb-0">Monthly</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Deductions Tab -->
+            <div class="tab-pane fade" id="deductions" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="addDeduction()">
+                        <i class="fas fa-plus"></i> Add Deduction
+                    </button>
+                    <button class="btn btn-info" onclick="configureTaxes()">
+                        <i class="fas fa-cog"></i> Configure Taxes
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Deduction Types</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="deduction-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Federal Income Tax</h6>
+                                    <p class="text-muted mb-0">Federal tax withholding</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-danger">Mandatory</span>
+                                    <p class="text-muted mb-0">Percentage: 22%</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-negative">$1,870.00</span>
+                                    <p class="text-muted mb-0">Total Deducted</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="deduction-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>State Income Tax</h6>
+                                    <p class="text-muted mb-0">State tax withholding</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-danger">Mandatory</span>
+                                    <p class="text-muted mb-0">Percentage: 5%</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-negative">$425.00</span>
+                                    <p class="text-muted mb-0">Total Deducted</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="deduction-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Social Security</h6>
+                                    <p class="text-muted mb-0">Social Security tax</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-danger">Mandatory</span>
+                                    <p class="text-muted mb-0">Percentage: 6.2%</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-negative">$527.00</span>
+                                    <p class="text-muted mb-0">Total Deducted</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="deduction-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Medicare</h6>
+                                    <p class="text-muted mb-0">Medicare tax</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-danger">Mandatory</span>
+                                    <p class="text-muted mb-0">Percentage: 1.45%</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-negative">$123.25</span>
+                                    <p class="text-muted mb-0">Total Deducted</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="deduction-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Health Insurance</h6>
+                                    <p class="text-muted mb-0">Employee health insurance</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-warning">Optional</span>
+                                    <p class="text-muted mb-0">Fixed: $200/month</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-negative">$200.00</span>
+                                    <p class="text-muted mb-0">Total Deducted</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="deduction-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>401(k) Contribution</h6>
+                                    <p class="text-muted mb-0">Retirement savings</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-info">Voluntary</span>
+                                    <p class="text-muted mb-0">Percentage: 5%</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-negative">$425.00</span>
+                                    <p class="text-muted mb-0">Total Deducted</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Benefits Tab -->
+            <div class="tab-pane fade" id="benefits" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="addBenefit()">
+                        <i class="fas fa-plus"></i> Add Benefit
+                    </button>
+                    <button class="btn btn-info" onclick="configureBenefits()">
+                        <i class="fas fa-cog"></i> Configure Benefits
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Employee Benefits</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="benefit-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Health Insurance</h6>
+                                    <p class="text-muted mb-0">Comprehensive health coverage</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Coverage: 80%</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$800.00</span>
+                                    <p class="text-muted mb-0">Monthly Cost</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Dental Insurance</h6>
+                                    <p class="text-muted mb-0">Dental care coverage</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Coverage: 70%</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$150.00</span>
+                                    <p class="text-muted mb-0">Monthly Cost</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Vision Insurance</h6>
+                                    <p class="text-muted mb-0">Vision care coverage</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Coverage: 60%</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$75.00</span>
+                                    <p class="text-muted mb-0">Monthly Cost</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Life Insurance</h6>
+                                    <p class="text-muted mb-0">Term life insurance</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Coverage: $50,000</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$25.00</span>
+                                    <p class="text-muted mb-0">Monthly Cost</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Retirement Plan</h6>
+                                    <p class="text-muted mb-0">401(k) matching program</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Match: 5%</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-positive">$425.00</span>
+                                    <p class="text-muted mb-0">Monthly Contribution</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Paid Time Off</h6>
+                                    <p class="text-muted mb-0">Vacation and sick leave</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-info">Policy</span>
+                                    <p class="text-muted mb-0">Days: 20/year</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="amount-neutral">$0.00</span>
+                                    <p class="text-muted mb-0">No Cost</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payroll Tab -->
+            <div class="tab-pane fade" id="payroll" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="processPayroll()">
+                        <i class="fas fa-play"></i> Process Payroll
+                    </button>
+                    <button class="btn btn-info" onclick="schedulePayroll()">
+                        <i class="fas fa-calendar"></i> Schedule Payroll
+                    </button>
+                    <button class="btn btn-warning" onclick="exportPayroll()">
+                        <i class="fas fa-download"></i> Export Payroll
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Payroll Processing</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="payroll-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>John Doe - Payroll Calculation</h6>
+                                    <p class="text-muted mb-0">Pay Period: Dec 1-15, 2023</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="payroll-calculation">
+                                        <div class="calculation-row">
+                                            <span>Gross Salary:</span>
+                                            <span class="amount-positive">$4,250.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Federal Tax:</span>
+                                            <span class="amount-negative">-$935.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>State Tax:</span>
+                                            <span class="amount-negative">-$212.50</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Social Security:</span>
+                                            <span class="amount-negative">-$263.50</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Medicare:</span>
+                                            <span class="amount-negative">-$61.63</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Health Insurance:</span>
+                                            <span class="amount-negative">-$100.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>401(k) Contribution:</span>
+                                            <span class="amount-negative">-$212.50</span>
+                                        </div>
+                                        <div class="calculation-row total">
+                                            <span>Net Pay:</span>
+                                            <span class="amount-positive">$2,464.87</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="payroll-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Jane Smith - Payroll Calculation</h6>
+                                    <p class="text-muted mb-0">Pay Period: Dec 1-15, 2023</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="payroll-calculation">
+                                        <div class="calculation-row">
+                                            <span>Gross Salary:</span>
+                                            <span class="amount-positive">$3,600.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Federal Tax:</span>
+                                            <span class="amount-negative">-$792.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>State Tax:</span>
+                                            <span class="amount-negative">-$180.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Social Security:</span>
+                                            <span class="amount-negative">-$223.20</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Medicare:</span>
+                                            <span class="amount-negative">-$52.20</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Health Insurance:</span>
+                                            <span class="amount-negative">-$100.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>401(k) Contribution:</span>
+                                            <span class="amount-negative">-$180.00</span>
+                                        </div>
+                                        <div class="calculation-row total">
+                                            <span>Net Pay:</span>
+                                            <span class="amount-positive">$2,072.60</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="payroll-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Mike Johnson - Payroll Calculation</h6>
+                                    <p class="text-muted mb-0">Pay Period: Dec 1-15, 2023</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="payroll-calculation">
+                                        <div class="calculation-row">
+                                            <span>Gross Salary:</span>
+                                            <span class="amount-positive">$3,000.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Federal Tax:</span>
+                                            <span class="amount-negative">-$660.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>State Tax:</span>
+                                            <span class="amount-negative">-$150.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Social Security:</span>
+                                            <span class="amount-negative">-$186.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Medicare:</span>
+                                            <span class="amount-negative">-$43.50</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>Health Insurance:</span>
+                                            <span class="amount-negative">-$100.00</span>
+                                        </div>
+                                        <div class="calculation-row">
+                                            <span>401(k) Contribution:</span>
+                                            <span class="amount-negative">-$150.00</span>
+                                        </div>
+                                        <div class="calculation-row total">
+                                            <span>Net Pay:</span>
+                                            <span class="amount-positive">$1,710.50</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reports Tab -->
+            <div class="tab-pane fade" id="reports" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="generatePayrollReport()">
+                        <i class="fas fa-file-pdf"></i> Payroll Report
+                    </button>
+                    <button class="btn btn-success" onclick="generateTaxReport()">
+                        <i class="fas fa-file-alt"></i> Tax Report
+                    </button>
+                    <button class="btn btn-info" onclick="generateBenefitReport()">
+                        <i class="fas fa-heart"></i> Benefit Report
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Available Reports</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="report-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Monthly Payroll Summary</h6>
+                                    <p class="text-muted mb-0">Comprehensive monthly payroll overview</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-primary">PDF</span>
+                                    <p class="text-muted mb-0">Last generated: Dec 1, 2023</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="downloadReport('payroll')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="report-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Quarterly Tax Report</h6>
+                                    <p class="text-muted mb-0">Q4 2023 tax preparation report</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Excel</span>
+                                    <p class="text-muted mb-0">Last generated: Nov 30, 2023</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="downloadReport('tax')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="report-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Employee Benefit Analysis</h6>
+                                    <p class="text-muted mb-0">Benefit utilization and cost analysis</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-info">PDF</span>
+                                    <p class="text-muted mb-0">Last generated: Dec 10, 2023</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="downloadReport('benefit')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="report-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Salary Distribution Report</h6>
+                                    <p class="text-muted mb-0">Salary ranges and distribution analysis</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-warning">Excel</span>
+                                    <p class="text-muted mb-0">Last generated: Dec 5, 2023</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="downloadReport('salary')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <!-- Layout Management -->
+    <script src="assets/js/layout.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize charts
+            // Charts are now initialized by layout.js
+        });
+        
+        // Charts are now initialized by layout.js
+            new Chart(trendsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Gross Payroll',
+                        data: [120000, 125000, 130000, 128000, 135000, 140000, 138000, 145000, 142000, 150000, 148000, 125000],
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Net Payroll',
+                        data: [90000, 94000, 98000, 96000, 101000, 105000, 103000, 109000, 106000, 112000, 111000, 106250],
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+            
+            // Department Chart
+            const departmentCtx = document.getElementById('departmentChart').getContext('2d');
+            new Chart(departmentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['IT', 'HR', 'Sales', 'Marketing', 'Finance'],
+                    datasets: [{
+                        data: [8, 3, 6, 4, 4],
+                        backgroundColor: [
+                            'rgba(0, 123, 255, 0.8)',
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(220, 53, 69, 0.8)',
+                            'rgba(108, 117, 125, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(40, 167, 69, 1)',
+                            'rgba(255, 193, 7, 1)',
+                            'rgba(220, 53, 69, 1)',
+                            'rgba(108, 117, 125, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+            
+            // Salary Ranges Chart
+            const salaryRangesCtx = document.getElementById('salaryRangesChart').getContext('2d');
+            new Chart(salaryRangesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['$40k-$50k', '$50k-$60k', '$60k-$70k', '$70k-$80k', '$80k-$90k', '$90k+'],
+                    datasets: [{
+                        label: 'Number of Employees',
+                        data: [3, 5, 7, 6, 3, 1],
+                        backgroundColor: [
+                            'rgba(0, 123, 255, 0.8)',
+                            'rgba(0, 123, 255, 0.8)',
+                            'rgba(0, 123, 255, 0.8)',
+                            'rgba(0, 123, 255, 0.8)',
+                            'rgba(0, 123, 255, 0.8)',
+                            'rgba(0, 123, 255, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Deduction Breakdown Chart
+            const deductionBreakdownCtx = document.getElementById('deductionBreakdownChart').getContext('2d');
+            new Chart(deductionBreakdownCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Federal Tax', 'State Tax', 'Social Security', 'Medicare', 'Health Insurance', '401(k)'],
+                    datasets: [{
+                        data: [1870, 425, 527, 123, 200, 425],
+                        backgroundColor: [
+                            'rgba(220, 53, 69, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(0, 123, 255, 0.8)',
+                            'rgba(108, 117, 125, 0.8)',
+                            'rgba(23, 162, 184, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(220, 53, 69, 1)',
+                            'rgba(255, 193, 7, 1)',
+                            'rgba(40, 167, 69, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(108, 117, 125, 1)',
+                            'rgba(23, 162, 184, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Process Payroll
+        function processPayroll() {
+            toastr.info('Process payroll functionality would be implemented here');
+        }
+        
+        // Generate Payroll Report
+        function generatePayrollReport() {
+            toastr.info('Generate payroll report functionality would be implemented here');
+        }
+        
+        // Apply Filters
+        function applyFilters() {
+            toastr.info('Apply filters functionality would be implemented here');
+        }
+        
+        // Clear Filters
+        function clearFilters() {
+            document.getElementById('payPeriod').value = 'current';
+            document.getElementById('departmentFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('employeeFilter').value = '';
+            toastr.success('Filters cleared');
+        }
+        
+        // Add Employee
+        function addEmployee() {
+            toastr.info('Add employee functionality would be implemented here');
+        }
+        
+        // Import Employees
+        function importEmployees() {
+            toastr.info('Import employees functionality would be implemented here');
+        }
+        
+        // Export Employees
+        function exportEmployees() {
+            toastr.info('Export employees functionality would be implemented here');
+        }
+        
+        // Add Salary
+        function addSalary() {
+            toastr.info('Add salary functionality would be implemented here');
+        }
+        
+        // Adjust Salaries
+        function adjustSalaries() {
+            toastr.info('Adjust salaries functionality would be implemented here');
+        }
+        
+        // Add Deduction
+        function addDeduction() {
+            toastr.info('Add deduction functionality would be implemented here');
+        }
+        
+        // Configure Taxes
+        function configureTaxes() {
+            toastr.info('Configure taxes functionality would be implemented here');
+        }
+        
+        // Add Benefit
+        function addBenefit() {
+            toastr.info('Add benefit functionality would be implemented here');
+        }
+        
+        // Configure Benefits
+        function configureBenefits() {
+            toastr.info('Configure benefits functionality would be implemented here');
+        }
+        
+        // Schedule Payroll
+        function schedulePayroll() {
+            toastr.info('Schedule payroll functionality would be implemented here');
+        }
+        
+        // Export Payroll
+        function exportPayroll() {
+            toastr.info('Export payroll functionality would be implemented here');
+        }
+        
+        // Generate Tax Report
+        function generateTaxReport() {
+            toastr.info('Generate tax report functionality would be implemented here');
+        }
+        
+        // Generate Benefit Report
+        function generateBenefitReport() {
+            toastr.info('Generate benefit report functionality would be implemented here');
+        }
+        
+        // Download Report
+        function downloadReport(type) {
+            toastr.info('Download ' + type + ' report functionality would be implemented here');
+        }
+    </script>
+</body>
+</html>

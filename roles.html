@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roles Management - AGAdmin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- DataTables -->
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .navbar {
+            background: white !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .permission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .permission-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-tachometer-alt"></i> AGAdmin</h3>
+            <button type="button" id="sidebarCollapse" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <ul class="list-unstyled components">
+            <!-- Dashboard -->
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            
+            <!-- User Management -->
+            <li class="active">
+                <a href="#userManagement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-users"></i> User Management
+                </a>
+                <ul class="collapse list-unstyled" id="userManagement">
+                    <li><a href="users.html">Users</a></li>
+                    <li><a href="roles.html">Roles</a></li>
+                    <li><a href="permissions.html">Permissions</a></li>
+                </ul>
+            </li>
+            
+            <!-- Master Data -->
+            <li>
+                <a href="#masterData" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-database"></i> Master Data
+                </a>
+                <ul class="collapse list-unstyled" id="masterData">
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="territories.html">Territories</a></li>
+                    <li><a href="stores.html">Stores</a></li>
+                </ul>
+            </li>
+            
+            <!-- Business Modules -->
+            <li>
+                <a href="#business" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-briefcase"></i> Business Modules
+                </a>
+                <ul class="collapse list-unstyled" id="business">
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="customers.html">Customers</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="hr.html">HR Management</a></li>
+                </ul>
+            </li>
+            
+            <!-- Finance & Payroll -->
+            <li>
+                <a href="#finance" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-chart-line"></i> Finance & Payroll
+                </a>
+                <ul class="collapse list-unstyled" id="finance">
+                    <li><a href="finance.html">Finance</a></li>
+                    <li><a href="payroll.html">Payroll</a></li>
+                </ul>
+            </li>
+            
+            <!-- Leave Management -->
+            <li>
+                <a href="leave-management.html">
+                    <i class="fas fa-calendar-alt"></i> Leave Management
+                </a>
+            </li>
+            
+            <!-- Ticketing System -->
+            <li>
+                <a href="ticketing.html">
+                    <i class="fas fa-ticket-alt"></i> Ticketing System
+                </a>
+            </li>
+            
+            <!-- Reports -->
+            <li>
+                <a href="reports.html">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+            </li>
+            
+            <!-- Communication -->
+            <li>
+                <a href="#communication" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-comments"></i> Communication
+                </a>
+                <ul class="collapse list-unstyled" id="communication">
+                    <li><a href="notifications.html">Notifications</a></li>
+                    <li><a href="messages.html">Messages</a></li>
+                    <li><a href="announcements.html">Announcements</a></li>
+                </ul>
+            </li>
+            
+            <!-- Settings -->
+            <li>
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            
+            <!-- Audit Logs -->
+            <li>
+                <a href="audit-logs.html">
+                    <i class="fas fa-history"></i> Audit Logs
+                </a>
+            </li>
+            
+            <!-- UI Components -->
+            <li>
+                <a href="ui-components.html">
+                    <i class="fas fa-palette"></i> UI Components
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <!-- Page Content -->
+    <div id="content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-info">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="navbar-nav ms-auto">
+                    <!-- Dark Mode Toggle -->
+                    <div class="nav-item me-3">
+                        <button class="btn btn-outline-secondary" id="darkModeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Language Selector -->
+                    <div class="nav-item me-3">
+                        <select class="form-select form-select-sm" id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="nav-item dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger" id="notificationCount">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+                            <li><a class="dropdown-item" href="#">New user registered</a></li>
+                            <li><a class="dropdown-item" href="#">Low inventory alert</a></li>
+                            <li><a class="dropdown-item" href="#">System maintenance scheduled</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="assets/images/avatar.jpg" alt="User" class="rounded-circle" width="30" height="30">
+                            <span class="ms-2">Admin User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Roles Management</h2>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#roleModal">
+                <i class="fas fa-plus"></i> Add Role
+            </button>
+        </div>
+        
+        <!-- Roles Table -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-hover" id="rolesTable">
+                    <thead>
+                        <tr>
+                            <th>Role ID</th>
+                            <th>Role Name</th>
+                            <th>Description</th>
+                            <th>Users Count</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ROLE001</td>
+                            <td><strong>Administrator</strong></td>
+                            <td>Full system access and control</td>
+                            <td>3</td>
+                            <td><span class="badge bg-success">Active</span></td>
+                            <td>2024-01-01</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewRole(1)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editRole(1)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="managePermissions(1)" title="Permissions">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="deleteRole(1)" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ROLE002</td>
+                            <td><strong>Manager</strong></td>
+                            <td>Department management and reporting</td>
+                            <td>5</td>
+                            <td><span class="badge bg-success">Active</span></td>
+                            <td>2024-01-02</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewRole(2)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editRole(2)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="managePermissions(2)" title="Permissions">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="deleteRole(2)" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ROLE003</td>
+                            <td><strong>User</strong></td>
+                            <td>Basic user access</td>
+                            <td>12</td>
+                            <td><span class="badge bg-success">Active</span></td>
+                            <td>2024-01-03</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewRole(3)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editRole(3)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="managePermissions(3)" title="Permissions">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="deleteRole(3)" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ROLE004</td>
+                            <td><strong>Guest</strong></td>
+                            <td>Limited read-only access</td>
+                            <td>2</td>
+                            <td><span class="badge bg-warning">Inactive</span></td>
+                            <td>2024-01-04</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewRole(4)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editRole(4)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="managePermissions(4)" title="Permissions">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="deleteRole(4)" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Role Modal -->
+    <div class="modal fade" id="roleModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roleModalTitle">Add New Role</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="roleForm">
+                        <input type="hidden" id="roleId" name="roleId">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="roleName" class="form-label">Role Name *</label>
+                                    <input type="text" class="form-control" id="roleName" name="roleName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="roleCode" class="form-label">Role Code *</label>
+                                    <input type="text" class="form-control" id="roleCode" name="roleCode" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="roleDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="roleDescription" name="roleDescription" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="roleStatus" class="form-label">Status *</label>
+                                    <select class="form-select" id="roleStatus" name="roleStatus" required>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="rolePriority" class="form-label">Priority</label>
+                                    <select class="form-select" id="rolePriority" name="rolePriority">
+                                        <option value="1">High</option>
+                                        <option value="2">Medium</option>
+                                        <option value="3">Low</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveRole()">Save Role</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Permissions Management Modal -->
+    <div class="modal fade" id="permissionsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Manage Permissions - <span id="selectedRoleName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Dashboard</h6>
+                            <div class="permission-grid">
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dashboard_view">
+                                        <label class="form-check-label" for="dashboard_view">View Dashboard</label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dashboard_export">
+                                        <label class="form-check-label" for="dashboard_export">Export Data</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h6 class="mt-4">User Management</h6>
+                            <div class="permission-grid">
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="users_view">
+                                        <label class="form-check-label" for="users_view">View Users</label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="users_create">
+                                        <label class="form-check-label" for="users_create">Create Users</label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="users_edit">
+                                        <label class="form-check-label" for="users_edit">Edit Users</label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="users_delete">
+                                        <label class="form-check-label" for="users_delete">Delete Users</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6>Sales Management</h6>
+                            <div class="permission-grid">
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="sales_view">
+                                        <label class="form-check-label" for="sales_view">View Sales</label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="sales_create">
+                                        <label class="form-check-label" for="sales_create">Create Sales</label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="sales_edit">
+                                        <label class="form-check-label" for="sales_edit">Edit Sales</label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="sales_delete">
+                                        <label class="form-check-label" for="sales_delete">Delete Sales</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h6 class="mt-4">Inventory Management</h6>
+                            <div class="permission-grid">
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="inventory_view">
+                                        <label class="form-check-label" for="inventory_view">View Inventory</label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="inventory_create">
+                                        <label class="form-check-label" for="inventory_create">Create Products</label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="inventory_edit">
+                                        <label class="form-check-label" for="inventory_edit">Edit Products</label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="inventory_delete">
+                                        <label class="form-check-label" for="inventory_delete">Delete Products</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="savePermissions()">Save Permissions</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <!-- Layout Management -->
+    <script src="assets/js/layout.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#rolesTable').DataTable({
+                responsive: true,
+                pageLength: 25,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                order: [[0, 'asc']],
+                columnDefs: [
+                    { orderable: false, targets: [6] } // Actions column
+                ]
+            });
+        });
+        
+        // View Role
+        function viewRole(id) {
+            toastr.info('View role ' + id + ' functionality would be implemented here');
+        }
+        
+        // Edit Role
+        function editRole(id) {
+            $('#roleModalTitle').text('Edit Role');
+            $('#roleId').val(id);
+            $('#roleModal').modal('show');
+        }
+        
+        // Manage Permissions
+        function managePermissions(id) {
+            $('#selectedRoleName').text('Administrator'); // This would be fetched from database
+            $('#permissionsModal').modal('show');
+        }
+        
+        // Delete Role
+        function deleteRole(id) {
+            Swal.fire({
+                title: 'Delete Role',
+                text: 'Are you sure you want to delete this role?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    toastr.success('Role deleted successfully');
+                }
+            });
+        }
+        
+        // Save Role
+        function saveRole() {
+            if ($('#roleForm')[0].checkValidity()) {
+                $('#roleModal').modal('hide');
+                toastr.success('Role saved successfully');
+            } else {
+                toastr.error('Please fill in all required fields');
+            }
+        }
+        
+        // Save Permissions
+        function savePermissions() {
+            $('#permissionsModal').modal('hide');
+            toastr.success('Permissions updated successfully');
+        }
+    </script>
+</body>
+</html>

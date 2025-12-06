@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management - AGAdmin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- DataTables -->
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    
+    <!-- Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .card-icon.primary { background: #007bff; }
+        .card-icon.warning { background: #ffc107; }
+        .card-icon.danger { background: #dc3545; }
+        .card-icon.success { background: #28a745; }
+        
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .navbar {
+            background: white !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-tachometer-alt"></i> AGAdmin</h3>
+            <button type="button" id="sidebarCollapse" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <ul class="list-unstyled components">
+            <!-- Dashboard -->
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            
+            <!-- User Management -->
+            <li>
+                <a href="#userManagement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-users"></i> User Management
+                </a>
+                <ul class="collapse list-unstyled" id="userManagement">
+                    <li><a href="users.html">Users</a></li>
+                    <li><a href="roles.html">Roles</a></li>
+                    <li><a href="permissions.html">Permissions</a></li>
+                </ul>
+            </li>
+            
+            <!-- Master Data -->
+            <li>
+                <a href="#masterData" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-database"></i> Master Data
+                </a>
+                <ul class="collapse list-unstyled" id="masterData">
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="territories.html">Territories</a></li>
+                    <li><a href="stores.html">Stores</a></li>
+                </ul>
+            </li>
+            
+            <!-- Business Modules -->
+            <li class="active">
+                <a href="#business" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-briefcase"></i> Business Modules
+                </a>
+                <ul class="collapse list-unstyled" id="business">
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="customers.html">Customers</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="hr.html">HR Management</a></li>
+                </ul>
+            </li>
+            
+            <!-- Finance & Payroll -->
+            <li>
+                <a href="#finance" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-chart-line"></i> Finance & Payroll
+                </a>
+                <ul class="collapse list-unstyled" id="finance">
+                    <li><a href="finance.html">Finance</a></li>
+                    <li><a href="payroll.html">Payroll</a></li>
+                </ul>
+            </li>
+            
+            <!-- Leave Management -->
+            <li>
+                <a href="leave-management.html">
+                    <i class="fas fa-calendar-alt"></i> Leave Management
+                </a>
+            </li>
+            
+            <!-- Ticketing System -->
+            <li>
+                <a href="ticketing.html">
+                    <i class="fas fa-ticket-alt"></i> Ticketing System
+                </a>
+            </li>
+            
+            <!-- Reports -->
+            <li>
+                <a href="reports.html">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+            </li>
+            
+            <!-- Communication -->
+            <li>
+                <a href="#communication" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-comments"></i> Communication
+                </a>
+                <ul class="collapse list-unstyled" id="communication">
+                    <li><a href="notifications.html">Notifications</a></li>
+                    <li><a href="messages.html">Messages</a></li>
+                    <li><a href="announcements.html">Announcements</a></li>
+                </ul>
+            </li>
+            
+            <!-- Settings -->
+            <li>
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            
+            <!-- Audit Logs -->
+            <li>
+                <a href="audit-logs.html">
+                    <i class="fas fa-history"></i> Audit Logs
+                </a>
+            </li>
+            
+            <!-- UI Components -->
+            <li>
+                <a href="ui-components.html">
+                    <i class="fas fa-palette"></i> UI Components
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <!-- Page Content -->
+    <div id="content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-info">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="navbar-nav ms-auto">
+                    <!-- Dark Mode Toggle -->
+                    <div class="nav-item me-3">
+                        <button class="btn btn-outline-secondary" id="darkModeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Language Selector -->
+                    <div class="nav-item me-3">
+                        <select class="form-select form-select-sm" id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="nav-item dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger" id="notificationCount">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+                            <li><a class="dropdown-item" href="#">Low inventory alert</a></li>
+                            <li><a class="dropdown-item" href="#">Stock update required</a></li>
+                            <li><a class="dropdown-item" href="#">New product added</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="assets/images/avatar.jpg" alt="User" class="rounded-circle" width="30" height="30">
+                            <span class="ms-2">Admin User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Inventory Management</h2>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#productModal">
+                <i class="fas fa-plus"></i> Add Product
+            </button>
+        </div>
+        
+        <!-- Inventory Summary -->
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="dashboard-card">
+                    <div class="card-icon primary">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <h3>1,234</h3>
+                    <p>Total Products</p>
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i> 25 new this month
+                    </small>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="dashboard-card">
+                    <div class="card-icon warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>23</h3>
+                    <p>Low Stock Items</p>
+                    <small class="text-warning">
+                        <i class="fas fa-arrow-up"></i> 5 new alerts
+                    </small>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="dashboard-card">
+                    <div class="card-icon danger">
+                        <i class="fas fa-times"></i>
+                    </div>
+                    <h3>8</h3>
+                    <p>Out of Stock</p>
+                    <small class="text-danger">
+                        <i class="fas fa-arrow-up"></i> 2 new today
+                    </small>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="dashboard-card">
+                    <div class="card-icon success">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h3>$456,789</h3>
+                    <p>Inventory Value</p>
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i> 8% from last month
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filters and Search -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Search products..." id="searchInput">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="books">Books</option>
+                    <option value="home">Home & Garden</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="in-stock">In Stock</option>
+                    <option value="low-stock">Low Stock</option>
+                    <option value="out-of-stock">Out of Stock</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-secondary" onclick="exportInventory()">
+                    <i class="fas fa-download"></i> Export
+                </button>
+            </div>
+            <div class="col-md-3 text-end">
+                <span class="text-muted">Total: <strong id="productCount">15</strong> products</span>
+            </div>
+        </div>
+        
+        <!-- Inventory Table -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-hover" id="inventoryTable">
+                    <thead>
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>SKU</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>PRD001</td>
+                            <td>Laptop Pro</td>
+                            <td>Electronics</td>
+                            <td>LP-001</td>
+                            <td>45</td>
+                            <td>$1,299</td>
+                            <td><span class="badge bg-success">In Stock</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewProduct(1)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editProduct(1)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="adjustStock(1)" title="Adjust Stock">
+                                        <i class="fas fa-plus-minus"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PRD002</td>
+                            <td>Smartphone</td>
+                            <td>Electronics</td>
+                            <td>SP-002</td>
+                            <td>12</td>
+                            <td>$899</td>
+                            <td><span class="badge bg-warning">Low Stock</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewProduct(2)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editProduct(2)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="adjustStock(2)" title="Adjust Stock">
+                                        <i class="fas fa-plus-minus"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PRD003</td>
+                            <td>Tablet</td>
+                            <td>Electronics</td>
+                            <td>TB-003</td>
+                            <td>0</td>
+                            <td>$599</td>
+                            <td><span class="badge bg-danger">Out of Stock</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewProduct(3)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editProduct(3)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="adjustStock(3)" title="Adjust Stock">
+                                        <i class="fas fa-plus-minus"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PRD004</td>
+                            <td>Headphones</td>
+                            <td>Electronics</td>
+                            <td>HP-004</td>
+                            <td>78</td>
+                            <td>$199</td>
+                            <td><span class="badge bg-success">In Stock</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewProduct(4)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editProduct(4)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="adjustStock(4)" title="Adjust Stock">
+                                        <i class="fas fa-plus-minus"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PRD005</td>
+                            <td>Camera</td>
+                            <td>Electronics</td>
+                            <td>CM-005</td>
+                            <td>23</td>
+                            <td>$1,199</td>
+                            <td><span class="badge bg-success">In Stock</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewProduct(5)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editProduct(5)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="adjustStock(5)" title="Adjust Stock">
+                                        <i class="fas fa-plus-minus"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Product Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalTitle">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="productForm">
+                        <input type="hidden" id="productId" name="productId">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="productName" class="form-label">Product Name *</label>
+                                    <input type="text" class="form-control" id="productName" name="productName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="productSku" class="form-label">SKU *</label>
+                                    <input type="text" class="form-control" id="productSku" name="productSku" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="productCategory" class="form-label">Category *</label>
+                                    <select class="form-select" id="productCategory" name="productCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="electronics">Electronics</option>
+                                        <option value="clothing">Clothing</option>
+                                        <option value="books">Books</option>
+                                        <option value="home">Home & Garden</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="productBrand" class="form-label">Brand</label>
+                                    <input type="text" class="form-control" id="productBrand" name="productBrand">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="productPrice" class="form-label">Price *</label>
+                                    <input type="number" class="form-control" id="productPrice" name="productPrice" step="0.01" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="productStock" class="form-label">Stock Quantity *</label>
+                                    <input type="number" class="form-control" id="productStock" name="productStock" min="0" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="minStock" class="form-label">Minimum Stock</label>
+                                    <input type="number" class="form-control" id="minStock" name="minStock" min="0">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="maxStock" class="form-label">Maximum Stock</label>
+                                    <input type="number" class="form-control" id="maxStock" name="maxStock" min="0">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="productDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="productDescription" name="productDescription" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="productImage" class="form-label">Product Image</label>
+                            <input type="file" class="form-control" id="productImage" name="productImage" accept="image/*">
+                            <div class="form-text">JPG, PNG or GIF. Max size 2MB.</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveProduct()">Save Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Adjust Stock Modal -->
+    <div class="modal fade" id="adjustStockModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adjust Stock</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="adjustStockForm">
+                        <input type="hidden" id="adjustProductId" name="productId">
+                        
+                        <div class="mb-3">
+                            <label for="currentStock" class="form-label">Current Stock</label>
+                            <input type="number" class="form-control" id="currentStock" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="adjustmentType" class="form-label">Adjustment Type *</label>
+                            <select class="form-select" id="adjustmentType" name="adjustmentType" required>
+                                <option value="">Select Type</option>
+                                <option value="add">Add Stock</option>
+                                <option value="remove">Remove Stock</option>
+                                <option value="set">Set Stock</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="adjustmentQuantity" class="form-label">Quantity *</label>
+                            <input type="number" class="form-control" id="adjustmentQuantity" name="adjustmentQuantity" min="0" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="adjustmentReason" class="form-label">Reason</label>
+                            <select class="form-select" id="adjustmentReason" name="adjustmentReason">
+                                <option value="">Select Reason</option>
+                                <option value="sale">Sale</option>
+                                <option value="return">Return</option>
+                                <option value="damage">Damage</option>
+                                <option value="theft">Theft</option>
+                                <option value="correction">Stock Correction</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="adjustmentNotes" class="form-label">Notes</label>
+                            <textarea class="form-control" id="adjustmentNotes" name="adjustmentNotes" rows="2"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveStockAdjustment()">Adjust Stock</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <!-- Layout Management -->
+    <script src="assets/js/layout.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#inventoryTable').DataTable({
+                responsive: true,
+                pageLength: 25,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                order: [[0, 'asc']], // Sort by Product ID
+                columnDefs: [
+                    { orderable: false, targets: [7] } // Actions column
+                ]
+            });
+            
+            // Setup filters
+            $('#categoryFilter, #statusFilter').on('change', function() {
+                filterInventory();
+            });
+            
+            // Search functionality
+            $('#searchInput').on('keyup', function() {
+                $('#inventoryTable').DataTable().search(this.value).draw();
+            });
+        });
+        
+        // View Product
+        function viewProduct(id) {
+            toastr.info('View product ' + id + ' functionality would be implemented here');
+        }
+        
+        // Edit Product
+        function editProduct(id) {
+            $('#productModalTitle').text('Edit Product');
+            $('#productId').val(id);
+            $('#productModal').modal('show');
+        }
+        
+        // Adjust Stock
+        function adjustStock(id) {
+            $('#adjustProductId').val(id);
+            $('#currentStock').val('45'); // This would be fetched from the database
+            $('#adjustStockModal').modal('show');
+        }
+        
+        // Save Product
+        function saveProduct() {
+            if ($('#productForm')[0].checkValidity()) {
+                $('#productModal').modal('hide');
+                toastr.success('Product saved successfully');
+            } else {
+                toastr.error('Please fill in all required fields');
+            }
+        }
+        
+        // Save Stock Adjustment
+        function saveStockAdjustment() {
+            if ($('#adjustStockForm')[0].checkValidity()) {
+                $('#adjustStockModal').modal('hide');
+                toastr.success('Stock adjusted successfully');
+            } else {
+                toastr.error('Please fill in all required fields');
+            }
+        }
+        
+        // Export Inventory
+        function exportInventory() {
+            toastr.info('Export functionality would be implemented here');
+        }
+        
+        // Filter Inventory
+        function filterInventory() {
+            const categoryFilter = $('#categoryFilter').val();
+            const statusFilter = $('#statusFilter').val();
+            
+            let table = $('#inventoryTable').DataTable();
+            
+            if (categoryFilter) {
+                table.column(2).search(categoryFilter);
+            } else {
+                table.column(2).search('');
+            }
+            
+            if (statusFilter) {
+                table.column(6).search(statusFilter);
+            } else {
+                table.column(6).search('');
+            }
+            
+            table.draw();
+        }
+    </script>
+</body>
+</html>

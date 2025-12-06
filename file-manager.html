@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Manager - AGAdmin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Charts replaced with CSS-based simple charts -->
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <style>
+        .file-manager-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .file-browser {
+            display: flex;
+            height: 600px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .file-sidebar {
+            width: 250px;
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            padding: 15px;
+        }
+        
+        .file-main {
+            flex: 1;
+            padding: 15px;
+        }
+        
+        .file-toolbar {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .file-path {
+            background: #e9ecef;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .file-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .file-item:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .file-item.selected {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        
+        .file-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+        
+        .file-icon.folder {
+            color: #ffc107;
+        }
+        
+        .file-icon.pdf {
+            color: #dc3545;
+        }
+        
+        .file-icon.image {
+            color: #28a745;
+        }
+        
+        .file-icon.document {
+            color: #007bff;
+        }
+        
+        .file-name {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+        
+        .file-size {
+            font-size: 10px;
+            color: #666;
+        }
+        
+        .file-actions {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .file-item:hover .file-actions {
+            opacity: 1;
+        }
+        
+        .folder-tree {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .folder-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .folder-item:hover {
+            background: #e9ecef;
+        }
+        
+        .folder-item.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .folder-item i {
+            margin-right: 8px;
+            width: 16px;
+        }
+        
+        .upload-area {
+            border: 2px dashed #007bff;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            background: #e3f2fd;
+            border-color: #0056b3;
+        }
+        
+        .upload-area.dragover {
+            background: #e3f2fd;
+            border-color: #0056b3;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        
+        .file-preview {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 5px;
+        }
+        
+        .preview-text {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-tachometer-alt"></i> AGAdmin</h3>
+        </div>
+        
+        <ul class="components">
+            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            
+            <li>
+                <a href="#userManagement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-users"></i> User Management
+                </a>
+                <ul class="collapse list-unstyled" id="userManagement">
+                    <li><a href="users.html">Users</a></li>
+                    <li><a href="roles.html">Roles</a></li>
+                    <li><a href="permissions.html">Permissions</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <a href="#masterData" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-database"></i> Master Data
+                </a>
+                <ul class="collapse list-unstyled" id="masterData">
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="territories.html">Territories</a></li>
+                    <li><a href="stores.html">Stores</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <a href="#business" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-briefcase"></i> Business Modules
+                </a>
+                <ul class="collapse list-unstyled" id="business">
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="purchase.html">Purchase</a></li>
+                    <li><a href="customers.html">Customers</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="hr.html">HR</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <a href="#finance" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-chart-line"></i> Finance & Payroll
+                </a>
+                <ul class="collapse list-unstyled" id="finance">
+                    <li><a href="finance.html">Finance</a></li>
+                    <li><a href="payroll.html">Payroll</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="leave-management.html"><i class="fas fa-calendar-times"></i> Leave Management</a></li>
+            <li><a href="ticketing.html"><i class="fas fa-ticket-alt"></i> Ticketing System</a></li>
+            <li><a href="reports.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+            
+            <li>
+                <a href="#communication" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-comments"></i> Communication
+                </a>
+                <ul class="collapse list-unstyled" id="communication">
+                    <li><a href="notifications.html">Notifications</a></li>
+                    <li><a href="messages.html">Messages</a></li>
+                    <li><a href="announcements.html">Announcements</a></li>
+                    <li><a href="calendar.html">Calendar</a></li>
+                    <li><a href="file-manager.html">File Manager</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="audit-logs.html"><i class="fas fa-clipboard-list"></i> Audit Logs</a></li>
+            <li><a href="ui-components.html"><i class="fas fa-palette"></i> UI Components</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content" id="content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+            <div class="container-fluid">
+                <button class="btn btn-link" id="sidebarCollapse">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">New order received</a></li>
+                            <li><a class="dropdown-item" href="#">Payment processed</a></li>
+                            <li><a class="dropdown-item" href="#">System maintenance</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> Admin User
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html">Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-folder-open"></i> File Manager</h2>
+                <div>
+                    <button class="btn btn-primary btn-sm me-2" onclick="createFolder()">
+                        <i class="fas fa-folder-plus"></i> New Folder
+                    </button>
+                    <button class="btn btn-success btn-sm me-2" onclick="uploadFiles()">
+                        <i class="fas fa-upload"></i> Upload Files
+                    </button>
+                    <button class="btn btn-info btn-sm me-2" onclick="refreshFiles()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-warning btn-sm" onclick="downloadSelected()">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+            
+            <!-- File Manager -->
+            <div class="file-manager-container">
+                <div class="file-browser">
+                    <!-- Sidebar -->
+                    <div class="file-sidebar">
+                        <h6 class="mb-3">Folders</h6>
+                        <ul class="folder-tree">
+                            <li class="folder-item active" onclick="selectFolder('root')">
+                                <i class="fas fa-home"></i> Root
+                            </li>
+                            <li class="folder-item" onclick="selectFolder('documents')">
+                                <i class="fas fa-folder"></i> Documents
+                            </li>
+                            <li class="folder-item" onclick="selectFolder('images')">
+                                <i class="fas fa-folder"></i> Images
+                            </li>
+                            <li class="folder-item" onclick="selectFolder('videos')">
+                                <i class="fas fa-folder"></i> Videos
+                            </li>
+                            <li class="folder-item" onclick="selectFolder('downloads')">
+                                <i class="fas fa-folder"></i> Downloads
+                            </li>
+                            <li class="folder-item" onclick="selectFolder('projects')">
+                                <i class="fas fa-folder"></i> Projects
+                            </li>
+                        </ul>
+                        
+                        <hr class="my-3">
+                        
+                        <h6 class="mb-3">Storage Info</h6>
+                        <div class="storage-info">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Used:</span>
+                                <span>2.5 GB</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total:</span>
+                                <span>10 GB</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar" role="progressbar" style="width: 25%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Area -->
+                    <div class="file-main">
+                        <!-- Toolbar -->
+                        <div class="file-toolbar">
+                            <div class="file-path" id="currentPath">/Root</div>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-secondary" onclick="goBack()" title="Back">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="goForward()" title="Forward">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="goUp()" title="Up">
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Upload Area -->
+                        <div class="upload-area" id="uploadArea" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h5>Drop files here to upload</h5>
+                            <p class="text-muted">Or click to select files</p>
+                            <input type="file" id="fileInput" multiple style="display: none;" onchange="handleFileSelect(event)">
+                        </div>
+                        
+                        <!-- File Grid -->
+                        <div class="file-grid" id="fileGrid">
+                            <!-- Files will be generated by JavaScript -->
+                        </div>
+                        
+                        <!-- File Preview -->
+                        <div class="file-preview" id="filePreview" style="display: none;">
+                            <h6>File Preview</h6>
+                            <div id="previewContent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Actions Modal -->
+    <div class="modal fade" id="fileActionsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">File Actions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group">
+                        <button class="list-group-item list-group-item-action" onclick="downloadFile()">
+                            <i class="fas fa-download me-2"></i> Download
+                        </button>
+                        <button class="list-group-item list-group-item-action" onclick="renameFile()">
+                            <i class="fas fa-edit me-2"></i> Rename
+                        </button>
+                        <button class="list-group-item list-group-item-action" onclick="moveFile()">
+                            <i class="fas fa-folder-open me-2"></i> Move
+                        </button>
+                        <button class="list-group-item list-group-item-action" onclick="copyFile()">
+                            <i class="fas fa-copy me-2"></i> Copy
+                        </button>
+                        <button class="list-group-item list-group-item-action text-danger" onclick="deleteFile()">
+                            <i class="fas fa-trash me-2"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <!-- Layout Management -->
+    <script src="assets/js/layout.js"></script>
+    
+    <script>
+        let currentFolder = 'root';
+        let selectedFiles = [];
+        
+        // Sample files data
+        const files = {
+            root: [
+                { name: 'Documents', type: 'folder', size: '', icon: 'folder' },
+                { name: 'Images', type: 'folder', size: '', icon: 'folder' },
+                { name: 'Videos', type: 'folder', size: '', icon: 'folder' },
+                { name: 'project-report.pdf', type: 'file', size: '2.3 MB', icon: 'pdf' },
+                { name: 'presentation.pptx', type: 'file', size: '5.1 MB', icon: 'document' },
+                { name: 'logo.png', type: 'file', size: '156 KB', icon: 'image' },
+                { name: 'data.xlsx', type: 'file', size: '892 KB', icon: 'document' }
+            ],
+            documents: [
+                { name: 'contract.pdf', type: 'file', size: '1.2 MB', icon: 'pdf' },
+                { name: 'invoice.docx', type: 'file', size: '456 KB', icon: 'document' },
+                { name: 'report.pdf', type: 'file', size: '3.4 MB', icon: 'pdf' }
+            ],
+            images: [
+                { name: 'profile.jpg', type: 'file', size: '234 KB', icon: 'image' },
+                { name: 'banner.png', type: 'file', size: '1.8 MB', icon: 'image' },
+                { name: 'gallery', type: 'folder', size: '', icon: 'folder' }
+            ],
+            videos: [
+                { name: 'demo.mp4', type: 'file', size: '45.2 MB', icon: 'video' },
+                { name: 'tutorial.avi', type: 'file', size: '78.9 MB', icon: 'video' }
+            ]
+        };
+        
+        $(document).ready(function() {
+            loadFiles();
+            
+            // Upload area click handler
+            $('#uploadArea').on('click', function() {
+                $('#fileInput').click();
+            });
+        });
+        
+        function loadFiles() {
+            const folderFiles = files[currentFolder] || [];
+            let html = '';
+            
+            folderFiles.forEach((file, index) => {
+                const iconClass = file.type === 'folder' ? 'folder' : file.icon;
+                html += `
+                    <div class="file-item" onclick="selectFile(${index})" oncontextmenu="showContextMenu(event, ${index})">
+                        <div class="file-actions">
+                            <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); viewFile(${index})" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="file-icon ${iconClass}">
+                            <i class="fas fa-${getFileIcon(file)}"></i>
+                        </div>
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${file.size}</div>
+                    </div>
+                `;
+            });
+            
+            $('#fileGrid').html(html);
+            updatePath();
+        }
+        
+        function getFileIcon(file) {
+            if (file.type === 'folder') return 'folder';
+            if (file.icon === 'pdf') return 'file-pdf';
+            if (file.icon === 'image') return 'file-image';
+            if (file.icon === 'video') return 'file-video';
+            if (file.icon === 'document') return 'file-alt';
+            return 'file';
+        }
+        
+        function selectFile(index) {
+            $('.file-item').removeClass('selected');
+            $(`.file-item:nth-child(${index + 1})`).addClass('selected');
+            selectedFiles = [index];
+        }
+        
+        function selectFolder(folder) {
+            currentFolder = folder;
+            $('.folder-item').removeClass('active');
+            $(event.target).addClass('active');
+            loadFiles();
+        }
+        
+        function viewFile(index) {
+            const file = files[currentFolder][index];
+            if (file.type === 'folder') {
+                currentFolder = file.name.toLowerCase();
+                loadFiles();
+            } else {
+                showFilePreview(file);
+            }
+        }
+        
+        function showFilePreview(file) {
+            $('#filePreview').show();
+            let previewContent = '';
+            
+            if (file.icon === 'image') {
+                previewContent = `<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlPC90ZXh0Pjwvc3ZnPg==" class="preview-image" alt="Image preview">`;
+            } else if (file.icon === 'pdf') {
+                previewContent = `<div class="preview-text">PDF Preview<br>File: ${file.name}<br>Size: ${file.size}<br><br>PDF content would be displayed here...</div>`;
+            } else {
+                previewContent = `<div class="preview-text">File: ${file.name}<br>Size: ${file.size}<br>Type: ${file.icon}<br><br>Preview not available for this file type.</div>`;
+            }
+            
+            $('#previewContent').html(previewContent);
+        }
+        
+        function updatePath() {
+            const pathMap = {
+                'root': '/Root',
+                'documents': '/Root/Documents',
+                'images': '/Root/Images',
+                'videos': '/Root/Videos',
+                'downloads': '/Root/Downloads',
+                'projects': '/Root/Projects'
+            };
+            $('#currentPath').text(pathMap[currentFolder] || '/Root');
+        }
+        
+        function goBack() {
+            toastr.info('Back functionality would be implemented here');
+        }
+        
+        function goForward() {
+            toastr.info('Forward functionality would be implemented here');
+        }
+        
+        function goUp() {
+            if (currentFolder !== 'root') {
+                currentFolder = 'root';
+                loadFiles();
+            }
+        }
+        
+        function createFolder() {
+            const folderName = prompt('Enter folder name:');
+            if (folderName) {
+                toastr.success(`Folder "${folderName}" created successfully`);
+                loadFiles();
+            }
+        }
+        
+        function uploadFiles() {
+            $('#fileInput').click();
+        }
+        
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            for (let file of files) {
+                toastr.success(`File "${file.name}" uploaded successfully`);
+            }
+            loadFiles();
+        }
+        
+        function dragOverHandler(event) {
+            event.preventDefault();
+            $('#uploadArea').addClass('dragover');
+        }
+        
+        function dragLeaveHandler(event) {
+            event.preventDefault();
+            $('#uploadArea').removeClass('dragover');
+        }
+        
+        function dropHandler(event) {
+            event.preventDefault();
+            $('#uploadArea').removeClass('dragover');
+            const files = event.dataTransfer.files;
+            for (let file of files) {
+                toastr.success(`File "${file.name}" uploaded successfully`);
+            }
+            loadFiles();
+        }
+        
+        function refreshFiles() {
+            loadFiles();
+            toastr.success('Files refreshed');
+        }
+        
+        function downloadSelected() {
+            if (selectedFiles.length > 0) {
+                toastr.info('Download functionality would be implemented here');
+            } else {
+                toastr.warning('Please select files to download');
+            }
+        }
+        
+        function showContextMenu(event, index) {
+            event.preventDefault();
+            selectedFiles = [index];
+            $('#fileActionsModal').modal('show');
+        }
+        
+        function downloadFile() {
+            $('#fileActionsModal').modal('hide');
+            toastr.info('Download functionality would be implemented here');
+        }
+        
+        function renameFile() {
+            $('#fileActionsModal').modal('hide');
+            const newName = prompt('Enter new name:');
+            if (newName) {
+                toastr.success('File renamed successfully');
+                loadFiles();
+            }
+        }
+        
+        function moveFile() {
+            $('#fileActionsModal').modal('hide');
+            toastr.info('Move functionality would be implemented here');
+        }
+        
+        function copyFile() {
+            $('#fileActionsModal').modal('hide');
+            toastr.info('Copy functionality would be implemented here');
+        }
+        
+        function deleteFile() {
+            $('#fileActionsModal').modal('hide');
+            Swal.fire({
+                title: 'Delete File',
+                text: 'Are you sure you want to delete this file?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    toastr.success('File deleted successfully');
+                    loadFiles();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+

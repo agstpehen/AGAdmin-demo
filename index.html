@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGAdmin - Complete Business Admin Panel</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Charts replaced with CSS-based simple charts -->
+    
+    <!-- DataTables -->
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    
+    <style>
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin: 0 auto;
+        }
+        
+        .card-icon.primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-icon.success { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .card-icon.warning { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .card-icon.danger { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+        
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .quick-action-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .quick-action-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .quick-action-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-tachometer-alt"></i> AGAdmin</h3>
+        </div>
+        
+        <ul class="list-unstyled components">
+            <!-- Dashboard -->
+            <li class="active">
+                <a href="#dashboard" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <ul class="collapse list-unstyled" id="dashboard">
+                    <li><a href="dashboard.html">Overview</a></li>
+                    <li><a href="dashboard.html">Analytics</a></li>
+                </ul>
+            </li>
+            
+            <!-- User Management -->
+            <li>
+                <a href="#userManagement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-users"></i> User Management
+                </a>
+                <ul class="collapse list-unstyled" id="userManagement">
+                    <li><a href="users.html">Users</a></li>
+                    <li><a href="roles.html">Roles</a></li>
+                    <li><a href="permissions.html">Permissions</a></li>
+                </ul>
+            </li>
+            
+            <!-- Master Data -->
+            <li>
+                <a href="#masterData" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-database"></i> Master Data
+                </a>
+                <ul class="collapse list-unstyled" id="masterData">
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="territories.html">Territories</a></li>
+                    <li><a href="stores.html">Stores</a></li>
+                </ul>
+            </li>
+            
+            <!-- Business Modules -->
+            <li>
+                <a href="#business" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-briefcase"></i> Business Modules
+                </a>
+                <ul class="collapse list-unstyled" id="business">
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="customers.html">Customers</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="hr.html">HR Management</a></li>
+                </ul>
+            </li>
+            
+            <!-- Reports -->
+            <li>
+                <a href="#reports" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+                <ul class="collapse list-unstyled" id="reports">
+                    <li><a href="reports.html">Sales Reports</a></li>
+                    <li><a href="reports.html">Financial Reports</a></li>
+                    <li><a href="reports.html">User Reports</a></li>
+                </ul>
+            </li>
+            
+            <!-- Communication -->
+            <li>
+                <a href="#communication" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-comments"></i> Communication
+                </a>
+                <ul class="collapse list-unstyled" id="communication">
+                    <li><a href="notifications.html">Notifications</a></li>
+                    <li><a href="messages.html">Messages</a></li>
+                    <li><a href="announcements.html">Announcements</a></li>
+                </ul>
+            </li>
+            
+            <!-- Settings -->
+            <li>
+                <a href="#settings" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <ul class="collapse list-unstyled" id="settings">
+                    <li><a href="settings.html">General</a></li>
+                    <li><a href="settings.html">Email</a></li>
+                    <li><a href="settings.html">Security</a></li>
+                </ul>
+            </li>
+            
+            <!-- Finance & Payroll -->
+            <li>
+                <a href="#finance" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-chart-line"></i> Finance & Payroll
+                </a>
+                <ul class="collapse list-unstyled" id="finance">
+                    <li><a href="finance.html">Finance</a></li>
+                    <li><a href="payroll.html">Payroll</a></li>
+                </ul>
+            </li>
+            
+            <!-- Leave Management -->
+            <li>
+                <a href="leave-management.html">
+                    <i class="fas fa-calendar-alt"></i> Leave Management
+                </a>
+            </li>
+            
+            <!-- Ticketing System -->
+            <li>
+                <a href="ticketing.html">
+                    <i class="fas fa-ticket-alt"></i> Ticketing System
+                </a>
+            </li>
+            
+            <!-- Audit Logs -->
+            <li>
+                <a href="audit-logs.html">
+                    <i class="fas fa-history"></i> Audit Logs
+                </a>
+            </li>
+            
+            <!-- UI Components -->
+            <li>
+                <a href="ui-components.html">
+                    <i class="fas fa-palette"></i> UI Components
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <!-- Page Content -->
+    <div id="content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-info">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <!-- Debug button for testing -->
+                <button type="button" id="debugToggle" class="btn btn-warning btn-sm ms-2" onclick="document.getElementById('sidebar').classList.toggle('active')">
+                    Debug
+                </button>
+                
+                <div class="navbar-nav ms-auto">
+                    <!-- Dark Mode Toggle -->
+                    <div class="nav-item me-3">
+                        <button class="btn btn-outline-secondary" id="darkModeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Language Selector -->
+                    <div class="nav-item me-3">
+                        <select class="form-select form-select-sm" id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="nav-item dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger" id="notificationCount">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+                            <li><a class="dropdown-item" href="#">New user registered</a></li>
+                            <li><a class="dropdown-item" href="#">Low inventory alert</a></li>
+                            <li><a class="dropdown-item" href="#">System maintenance scheduled</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="assets/images/avatar.jpg" alt="User" class="rounded-circle" width="30" height="30">
+                            <span class="ms-2">Admin User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                <div>
+                    <button class="btn btn-primary btn-sm me-2" onclick="refreshDashboard()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-success btn-sm" onclick="exportDashboard()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Dashboard Cards -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card dashboard-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon primary mb-3">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <h4>$45,230</h4>
+                            <p class="text-muted">Total Revenue</p>
+                            <small class="text-success"><i class="fas fa-arrow-up"></i> 12% from last month</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card dashboard-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon success mb-3">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h4>1,250</h4>
+                            <p class="text-muted">Total Users</p>
+                            <small class="text-success"><i class="fas fa-arrow-up"></i> 8% from last month</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card dashboard-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon warning mb-3">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <h4>856</h4>
+                            <p class="text-muted">Orders</p>
+                            <small class="text-warning"><i class="fas fa-arrow-down"></i> 3% from last month</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card dashboard-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon danger mb-3">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h4>92%</h4>
+                            <p class="text-muted">Growth Rate</p>
+                            <small class="text-success"><i class="fas fa-arrow-up"></i> 5% from last month</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts Row -->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card dashboard-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Sales Overview</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="salesTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card dashboard-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Revenue Sources</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="text-center quick-action-item">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <h6>Add User</h6>
+                                <p class="text-muted">Create new user account</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <div class="text-center quick-action-item">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <h6>View Sales</h6>
+                                <p class="text-muted">Check sales performance</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <div class="text-center quick-action-item">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-boxes"></i>
+                                </div>
+                                <h6>Manage Inventory</h6>
+                                <p class="text-muted">Update stock levels</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <div class="text-center quick-action-item">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <h6>Generate Report</h6>
+                                <p class="text-muted">Create business reports</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <div class="text-center quick-action-item">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-bell"></i>
+                                </div>
+                                <h6>Notifications</h6>
+                                <p class="text-muted">View system alerts</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <div class="text-center quick-action-item">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-cog"></i>
+                                </div>
+                                <h6>Settings</h6>
+                                <p class="text-muted">Configure system</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- jQuery (must load first) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <!-- Layout Management -->
+    <script src="assets/js/layout.js"></script>
+    
+    <script>
+        // Dashboard specific functions
+        function refreshDashboard() {
+            toastr.info('Dashboard refreshed');
+            // Reinitialize charts
+            // Charts are now initialized by layout.js
+        }
+        
+        function exportDashboard() {
+            toastr.info('Export functionality would be implemented here');
+        }
+        
+        // Initialize dashboard on page load
+        $(document).ready(function() {
+            // Additional dashboard initialization
+            console.log('Dashboard loaded successfully');
+        });
+        
+        // Debug function for mobile menu
+        function debugMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const isActive = sidebar.classList.contains('active');
+            console.log('Sidebar active:', isActive);
+            console.log('Window width:', window.innerWidth);
+            console.log('Sidebar computed style:', window.getComputedStyle(sidebar).left);
+            
+            // Force toggle
+            sidebar.classList.toggle('active');
+            console.log('After toggle - Sidebar active:', sidebar.classList.contains('active'));
+        }
+    </script>
+</body>
+</html>

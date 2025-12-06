@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticketing System - AGAdmin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Charts replaced with CSS-based simple charts -->
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .navbar {
+            background: white !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .ticket-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .summary-item h3 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .summary-item p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .ticket-item {
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .ticket-item.open {
+            border-left-color: #28a745;
+        }
+        
+        .ticket-item.in-progress {
+            border-left-color: #ffc107;
+        }
+        
+        .ticket-item.resolved {
+            border-left-color: #17a2b8;
+        }
+        
+        .ticket-item.closed {
+            border-left-color: #6c757d;
+        }
+        
+        .ticket-item.critical {
+            border-left-color: #dc3545;
+        }
+        
+        .category-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .priority-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #6f42c1;
+        }
+        
+        .agent-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #fd7e14;
+        }
+        
+        .knowledge-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #20c997;
+        }
+        
+        .report-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #e83e8c;
+        }
+        
+        .tab-content {
+            padding: 20px 0;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+        
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-buttons {
+            margin: 20px 0;
+        }
+        
+        .action-buttons .btn {
+            margin: 5px;
+        }
+        
+        .ticket-priority {
+            font-weight: bold;
+        }
+        
+        .priority-critical {
+            color: #dc3545;
+        }
+        
+        .priority-high {
+            color: #fd7e14;
+        }
+        
+        .priority-medium {
+            color: #ffc107;
+        }
+        
+        .priority-low {
+            color: #28a745;
+        }
+        
+        .ticket-status {
+            font-weight: bold;
+        }
+        
+        .status-open {
+            color: #28a745;
+        }
+        
+        .status-in-progress {
+            color: #ffc107;
+        }
+        
+        .status-resolved {
+            color: #17a2b8;
+        }
+        
+        .status-closed {
+            color: #6c757d;
+        }
+        
+        .ticket-meta {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        .ticket-description {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #007bff;
+        }
+        
+        .ticket-comments {
+            margin: 15px 0;
+        }
+        
+        .comment-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            border-left: 3px solid #dee2e6;
+        }
+        
+        .comment-author {
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .comment-date {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+        
+        .ticket-attachments {
+            margin: 10px 0;
+        }
+        
+        .attachment-item {
+            display: inline-block;
+            background: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin: 2px;
+            font-size: 0.8em;
+        }
+        
+        .ticket-tags {
+            margin: 10px 0;
+        }
+        
+        .tag-item {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin: 2px;
+            font-size: 0.8em;
+        }
+        
+        .ticket-stats {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-item.total {
+            font-weight: bold;
+            background: #e9ecef;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-tachometer-alt"></i> AGAdmin</h3>
+            <button type="button" id="sidebarCollapse" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <ul class="list-unstyled components">
+            <!-- Dashboard -->
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            
+            <!-- User Management -->
+            <li>
+                <a href="#userManagement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-users"></i> User Management
+                </a>
+                <ul class="collapse list-unstyled" id="userManagement">
+                    <li><a href="users.html">Users</a></li>
+                    <li><a href="roles.html">Roles</a></li>
+                    <li><a href="permissions.html">Permissions</a></li>
+                </ul>
+            </li>
+            
+            <!-- Master Data -->
+            <li>
+                <a href="#masterData" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-database"></i> Master Data
+                </a>
+                <ul class="collapse list-unstyled" id="masterData">
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="territories.html">Territories</a></li>
+                    <li><a href="stores.html">Stores</a></li>
+                </ul>
+            </li>
+            
+            <!-- Business Modules -->
+            <li>
+                <a href="#business" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-briefcase"></i> Business Modules
+                </a>
+                <ul class="collapse list-unstyled" id="business">
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="customers.html">Customers</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="hr.html">HR Management</a></li>
+                </ul>
+            </li>
+            
+            <!-- Finance & Payroll -->
+            <li>
+                <a href="#finance" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-chart-line"></i> Finance & Payroll
+                </a>
+                <ul class="collapse list-unstyled" id="finance">
+                    <li><a href="finance.html">Finance</a></li>
+                    <li><a href="payroll.html">Payroll</a></li>
+                </ul>
+            </li>
+            
+            <!-- Leave Management -->
+            <li>
+                <a href="leave-management.html">
+                    <i class="fas fa-calendar-alt"></i> Leave Management
+                </a>
+            </li>
+            
+            <!-- Ticketing System -->
+            <li class="active">
+                <a href="ticketing.html">
+                    <i class="fas fa-ticket-alt"></i> Ticketing System
+                </a>
+            </li>
+            
+            <!-- Reports -->
+            <li>
+                <a href="reports.html">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+            </li>
+            
+            <!-- Communication -->
+            <li>
+                <a href="#communication" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-comments"></i> Communication
+                </a>
+                <ul class="collapse list-unstyled" id="communication">
+                    <li><a href="notifications.html">Notifications</a></li>
+                    <li><a href="messages.html">Messages</a></li>
+                    <li><a href="announcements.html">Announcements</a></li>
+                </ul>
+            </li>
+            
+            <!-- Settings -->
+            <li>
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            
+            <!-- Audit Logs -->
+            <li>
+                <a href="audit-logs.html">
+                    <i class="fas fa-history"></i> Audit Logs
+                </a>
+            </li>
+            
+            <!-- UI Components -->
+            <li>
+                <a href="ui-components.html">
+                    <i class="fas fa-palette"></i> UI Components
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <!-- Page Content -->
+    <div id="content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-info">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="navbar-nav ms-auto">
+                    <!-- Dark Mode Toggle -->
+                    <div class="nav-item me-3">
+                        <button class="btn btn-outline-secondary" id="darkModeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Language Selector -->
+                    <div class="nav-item me-3">
+                        <select class="form-select form-select-sm" id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="nav-item dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger" id="notificationCount">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+                            <li><a class="dropdown-item" href="#">New ticket assigned</a></li>
+                            <li><a class="dropdown-item" href="#">Ticket escalated</a></li>
+                            <li><a class="dropdown-item" href="#">SLA breach warning</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="assets/images/avatar.jpg" alt="User" class="rounded-circle" width="30" height="30">
+                            <span class="ms-2">Admin User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-ticket-alt"></i> Ticketing System</h2>
+            <div>
+                <button class="btn btn-success btn-sm me-2" onclick="createTicket()">
+                    <i class="fas fa-plus"></i> Create Ticket
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="generateTicketReport()">
+                    <i class="fas fa-file-pdf"></i> Generate Report
+                </button>
+            </div>
+        </div>
+        
+        <!-- Ticket Summary -->
+        <div class="ticket-summary">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="summary-item">
+                        <h3>45</h3>
+                        <p>Open Tickets</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="summary-item">
+                        <h3>23</h3>
+                        <p>In Progress</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="summary-item">
+                        <h3>12</h3>
+                        <p>Resolved Today</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="summary-item">
+                        <h3>8</h3>
+                        <p>Critical Issues</p>
+                    </div>
+            </div>
+        </div>
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="statusFilter" class="form-label">Status</label>
+                    <select class="form-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="open">Open</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="priorityFilter" class="form-label">Priority</label>
+                    <select class="form-select" id="priorityFilter">
+                        <option value="">All Priorities</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="categoryFilter" class="form-label">Category</label>
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="technical">Technical</option>
+                        <option value="billing">Billing</option>
+                        <option value="general">General</option>
+                        <option value="feature">Feature Request</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="assigneeFilter" class="form-label">Assignee</label>
+                    <select class="form-select" id="assigneeFilter">
+                        <option value="">All Assignees</option>
+                        <option value="john">John Doe</option>
+                        <option value="jane">Jane Smith</option>
+                        <option value="mike">Mike Johnson</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                        <i class="fas fa-times"></i> Clear Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="ticketTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                    <i class="fas fa-chart-pie"></i> Overview
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tickets-tab" data-bs-toggle="tab" data-bs-target="#tickets" type="button" role="tab">
+                    <i class="fas fa-ticket-alt"></i> Tickets
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories" type="button" role="tab">
+                    <i class="fas fa-tags"></i> Categories
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="priorities-tab" data-bs-toggle="tab" data-bs-target="#priorities" type="button" role="tab">
+                    <i class="fas fa-exclamation-triangle"></i> Priorities
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="agents-tab" data-bs-toggle="tab" data-bs-target="#agents" type="button" role="tab">
+                    <i class="fas fa-users"></i> Agents
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="knowledge-tab" data-bs-toggle="tab" data-bs-target="#knowledge" type="button" role="tab">
+                    <i class="fas fa-book"></i> Knowledge Base
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </button>
+            </li>
+        </ul>
+        
+        <!-- Tab Content -->
+        <div class="tab-content" id="ticketTabsContent">
+            <!-- Overview Tab -->
+            <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Ticket Trends</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="ticketTrendsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Ticket Status Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="ticketStatusChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Priority Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="priorityChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Category Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="categoryChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tickets Tab -->
+            <div class="tab-pane fade" id="tickets" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="createTicket()">
+                        <i class="fas fa-plus"></i> Create Ticket
+                    </button>
+                    <button class="btn btn-info" onclick="bulkAssign()">
+                        <i class="fas fa-user-plus"></i> Bulk Assign
+                    </button>
+                    <button class="btn btn-warning" onclick="bulkUpdate()">
+                        <i class="fas fa-edit"></i> Bulk Update
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Recent Tickets</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="ticket-item critical">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>#TKT-2023-001</h6>
+                                    <p class="text-muted mb-0">System outage affecting all users</p>
+                                    <div class="ticket-tags">
+                                        <span class="tag-item">urgent</span>
+                                        <span class="tag-item">system</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-danger">Critical</span>
+                                    <p class="ticket-meta mb-0">Status: <span class="status-open">Open</span></p>
+                                    <p class="ticket-meta mb-0">Assignee: John Doe</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-info">Technical</span>
+                                    <p class="ticket-meta mb-0">Created: Dec 15, 2023</p>
+                                    <p class="ticket-meta mb-0">SLA: 2 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ticket-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>#TKT-2023-002</h6>
+                                    <p class="text-muted mb-0">Password reset not working</p>
+                                    <div class="ticket-tags">
+                                        <span class="tag-item">password</span>
+                                        <span class="tag-item">login</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-warning">High</span>
+                                    <p class="ticket-meta mb-0">Status: <span class="status-in-progress">In Progress</span></p>
+                                    <p class="ticket-meta mb-0">Assignee: Jane Smith</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-info">Technical</span>
+                                    <p class="ticket-meta mb-0">Created: Dec 14, 2023</p>
+                                    <p class="ticket-meta mb-0">SLA: 4 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ticket-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>#TKT-2023-003</h6>
+                                    <p class="text-muted mb-0">Billing inquiry about invoice</p>
+                                    <div class="ticket-tags">
+                                        <span class="tag-item">billing</span>
+                                        <span class="tag-item">invoice</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-info">Medium</span>
+                                    <p class="ticket-meta mb-0">Status: <span class="status-resolved">Resolved</span></p>
+                                    <p class="ticket-meta mb-0">Assignee: Mike Johnson</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-success">Billing</span>
+                                    <p class="ticket-meta mb-0">Created: Dec 13, 2023</p>
+                                    <p class="ticket-meta mb-0">SLA: 24 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ticket-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>#TKT-2023-004</h6>
+                                    <p class="text-muted mb-0">Feature request for mobile app</p>
+                                    <div class="ticket-tags">
+                                        <span class="tag-item">feature</span>
+                                        <span class="tag-item">mobile</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Low</span>
+                                    <p class="ticket-meta mb-0">Status: <span class="status-open">Open</span></p>
+                                    <p class="ticket-meta mb-0">Assignee: Unassigned</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">Feature</span>
+                                    <p class="ticket-meta mb-0">Created: Dec 12, 2023</p>
+                                    <p class="ticket-meta mb-0">SLA: 72 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ticket-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>#TKT-2023-005</h6>
+                                    <p class="text-muted mb-0">General inquiry about services</p>
+                                    <div class="ticket-tags">
+                                        <span class="tag-item">general</span>
+                                        <span class="tag-item">inquiry</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-info">Medium</span>
+                                    <p class="ticket-meta mb-0">Status: <span class="status-closed">Closed</span></p>
+                                    <p class="ticket-meta mb-0">Assignee: Sarah Wilson</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-secondary">General</span>
+                                    <p class="ticket-meta mb-0">Created: Dec 11, 2023</p>
+                                    <p class="ticket-meta mb-0">SLA: 24 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Categories Tab -->
+            <div class="tab-pane fade" id="categories" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="addCategory()">
+                        <i class="fas fa-plus"></i> Add Category
+                    </button>
+                    <button class="btn btn-info" onclick="configureCategories()">
+                        <i class="fas fa-cog"></i> Configure Categories
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Ticket Categories</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="category-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Technical Support</h6>
+                                    <p class="text-muted mb-0">Technical issues and system problems</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Tickets: 25</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">SLA: 4 hours</span>
+                                    <p class="text-muted mb-0">Default Priority: High</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="category-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Billing & Payments</h6>
+                                    <p class="text-muted mb-0">Billing inquiries and payment issues</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Tickets: 18</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">SLA: 24 hours</span>
+                                    <p class="text-muted mb-0">Default Priority: Medium</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="category-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>General Inquiry</h6>
+                                    <p class="text-muted mb-0">General questions and information requests</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Tickets: 12</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">SLA: 24 hours</span>
+                                    <p class="text-muted mb-0">Default Priority: Low</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="category-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Feature Request</h6>
+                                    <p class="text-muted mb-0">Requests for new features or improvements</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Tickets: 8</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">SLA: 72 hours</span>
+                                    <p class="text-muted mb-0">Default Priority: Low</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="category-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Account Management</h6>
+                                    <p class="text-muted mb-0">Account-related issues and changes</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Tickets: 15</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">SLA: 8 hours</span>
+                                    <p class="text-muted mb-0">Default Priority: Medium</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="category-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Security Issues</h6>
+                                    <p class="text-muted mb-0">Security concerns and incidents</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Tickets: 3</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">SLA: 1 hour</span>
+                                    <p class="text-muted mb-0">Default Priority: Critical</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Priorities Tab -->
+            <div class="tab-pane fade" id="priorities" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="addPriority()">
+                        <i class="fas fa-plus"></i> Add Priority
+                    </button>
+                    <button class="btn btn-info" onclick="configurePriorities()">
+                        <i class="fas fa-cog"></i> Configure Priorities
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Priority Levels</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="priority-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Critical</h6>
+                                    <p class="text-muted mb-0">System down, security breach, data loss</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-danger">Critical</span>
+                                    <p class="text-muted mb-0">SLA: 1 hour</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">Escalation: 30 min</span>
+                                    <p class="text-muted mb-0">Tickets: 8</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="priority-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>High</h6>
+                                    <p class="text-muted mb-0">Major functionality affected</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-warning">High</span>
+                                    <p class="text-muted mb-0">SLA: 4 hours</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">Escalation: 2 hours</span>
+                                    <p class="text-muted mb-0">Tickets: 15</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="priority-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Medium</h6>
+                                    <p class="text-muted mb-0">Minor issues, general inquiries</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-info">Medium</span>
+                                    <p class="text-muted mb-0">SLA: 24 hours</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">Escalation: 12 hours</span>
+                                    <p class="text-muted mb-0">Tickets: 32</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="priority-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Low</h6>
+                                    <p class="text-muted mb-0">Feature requests, general questions</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Low</span>
+                                    <p class="text-muted mb-0">SLA: 72 hours</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">Escalation: 48 hours</span>
+                                    <p class="text-muted mb-0">Tickets: 18</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Agents Tab -->
+            <div class="tab-pane fade" id="agents" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="addAgent()">
+                        <i class="fas fa-plus"></i> Add Agent
+                    </button>
+                    <button class="btn btn-info" onclick="assignAgents()">
+                        <i class="fas fa-user-plus"></i> Assign Agents
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Support Agents</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="agent-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>John Doe</h6>
+                                    <p class="text-muted mb-0">Senior Technical Support Agent</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Tickets: 25</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">Technical</span>
+                                    <p class="text-muted mb-0">Response Time: 2.5 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="agent-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Jane Smith</h6>
+                                    <p class="text-muted mb-0">Customer Support Specialist</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Tickets: 18</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-info">General</span>
+                                    <p class="text-muted mb-0">Response Time: 1.8 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="agent-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Mike Johnson</h6>
+                                    <p class="text-muted mb-0">Billing Support Agent</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Tickets: 12</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-success">Billing</span>
+                                    <p class="text-muted mb-0">Response Time: 3.2 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="agent-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Sarah Wilson</h6>
+                                    <p class="text-muted mb-0">Junior Support Agent</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-warning">Training</span>
+                                    <p class="text-muted mb-0">Tickets: 8</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-secondary">General</span>
+                                    <p class="text-muted mb-0">Response Time: 4.1 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="agent-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>David Brown</h6>
+                                    <p class="text-muted mb-0">Technical Lead</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Active</span>
+                                    <p class="text-muted mb-0">Tickets: 15</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-danger">Critical</span>
+                                    <p class="text-muted mb-0">Response Time: 1.2 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Knowledge Base Tab -->
+            <div class="tab-pane fade" id="knowledge" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="addArticle()">
+                        <i class="fas fa-plus"></i> Add Article
+                    </button>
+                    <button class="btn btn-info" onclick="importArticles()">
+                        <i class="fas fa-upload"></i> Import Articles
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Knowledge Base Articles</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="knowledge-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>How to Reset Your Password</h6>
+                                    <p class="text-muted mb-0">Step-by-step guide for password reset</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Published</span>
+                                    <p class="text-muted mb-0">Views: 245</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">Technical</span>
+                                    <p class="text-muted mb-0">Updated: Dec 10, 2023</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="knowledge-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Billing and Payment FAQ</h6>
+                                    <p class="text-muted mb-0">Common billing questions and answers</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Published</span>
+                                    <p class="text-muted mb-0">Views: 189</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-success">Billing</span>
+                                    <p class="text-muted mb-0">Updated: Dec 8, 2023</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="knowledge-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>System Requirements</h6>
+                                    <p class="text-muted mb-0">Minimum system requirements</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Published</span>
+                                    <p class="text-muted mb-0">Views: 156</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">Technical</span>
+                                    <p class="text-muted mb-0">Updated: Dec 5, 2023</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="knowledge-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Account Setup Guide</h6>
+                                    <p class="text-muted mb-0">Complete account setup instructions</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-warning">Draft</span>
+                                    <p class="text-muted mb-0">Views: 0</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-info">General</span>
+                                    <p class="text-muted mb-0">Created: Dec 12, 2023</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="knowledge-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Troubleshooting Common Issues</h6>
+                                    <p class="text-muted mb-0">Solutions for common problems</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Published</span>
+                                    <p class="text-muted mb-0">Views: 298</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">Technical</span>
+                                    <p class="text-muted mb-0">Updated: Dec 3, 2023</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="knowledge-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>API Documentation</h6>
+                                    <p class="text-muted mb-0">Complete API reference guide</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Published</span>
+                                    <p class="text-muted mb-0">Views: 134</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-primary">Technical</span>
+                                    <p class="text-muted mb-0">Updated: Dec 1, 2023</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reports Tab -->
+            <div class="tab-pane fade" id="reports" role="tabpanel">
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="generateTicketReport()">
+                        <i class="fas fa-file-pdf"></i> Ticket Report
+                    </button>
+                    <button class="btn btn-success" onclick="generateSLAReport()">
+                        <i class="fas fa-clock"></i> SLA Report
+                    </button>
+                    <button class="btn btn-info" onclick="generateAgentReport()">
+                        <i class="fas fa-user"></i> Agent Report
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Available Reports</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="report-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Monthly Ticket Summary</h6>
+                                    <p class="text-muted mb-0">Comprehensive monthly ticket overview</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-primary">PDF</span>
+                                    <p class="text-muted mb-0">Last generated: Dec 1, 2023</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="downloadReport('monthly')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="report-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>SLA Performance Report</h6>
+                                    <p class="text-muted mb-0">Service level agreement performance</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-success">Excel</span>
+                                    <p class="text-muted mb-0">Last generated: Nov 30, 2023</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="downloadReport('sla')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="report-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Agent Performance Analysis</h6>
+                                    <p class="text-muted mb-0">Individual agent performance metrics</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-info">PDF</span>
+                                    <p class="text-muted mb-0">Last generated: Dec 10, 2023</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="downloadReport('agent')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="report-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Customer Satisfaction Report</h6>
+                                    <p class="text-muted mb-0">Customer feedback and satisfaction scores</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-warning">Excel</span>
+                                    <p class="text-muted mb-0">Last generated: Dec 5, 2023</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="downloadReport('satisfaction')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <!-- Layout Management -->
+    <script src="assets/js/layout.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize charts
+            // Charts are now initialized by layout.js
+        });
+        
+        // Charts are now initialized by layout.js
+            // Ticket Trends Chart
+            const trendsCtx = document.getElementById('ticketTrendsChart').getContext('2d');
+            new Chart(trendsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Tickets Created',
+                        data: [120, 135, 128, 145, 142, 160, 155, 170, 165, 180, 175, 150],
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Tickets Resolved',
+                        data: [110, 125, 118, 135, 132, 150, 145, 160, 155, 170, 165, 140],
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+            
+            // Ticket Status Chart
+            const statusCtx = document.getElementById('ticketStatusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Open', 'In Progress', 'Resolved', 'Closed'],
+                    datasets: [{
+                        data: [45, 23, 12, 8],
+                        backgroundColor: [
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(23, 162, 184, 0.8)',
+                            'rgba(108, 117, 125, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(40, 167, 69, 1)',
+                            'rgba(255, 193, 7, 1)',
+                            'rgba(23, 162, 184, 1)',
+                            'rgba(108, 117, 125, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+            
+            // Priority Chart
+            const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+            new Chart(priorityCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Critical', 'High', 'Medium', 'Low'],
+                    datasets: [{
+                        label: 'Tickets',
+                        data: [8, 15, 32, 18],
+                        backgroundColor: [
+                            'rgba(220, 53, 69, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(0, 123, 255, 0.8)',
+                            'rgba(40, 167, 69, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(220, 53, 69, 1)',
+                            'rgba(255, 193, 7, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(40, 167, 69, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Category Chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(categoryCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Technical', 'Billing', 'General', 'Feature', 'Account', 'Security'],
+                    datasets: [{
+                        data: [25, 18, 12, 8, 15, 3],
+                        backgroundColor: [
+                            'rgba(0, 123, 255, 0.8)',
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(108, 117, 125, 0.8)',
+                            'rgba(111, 66, 193, 0.8)',
+                            'rgba(23, 162, 184, 0.8)',
+                            'rgba(220, 53, 69, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(40, 167, 69, 1)',
+                            'rgba(108, 117, 125, 1)',
+                            'rgba(111, 66, 193, 1)',
+                            'rgba(23, 162, 184, 1)',
+                            'rgba(220, 53, 69, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Create Ticket
+        function createTicket() {
+            toastr.info('Create ticket functionality would be implemented here');
+        }
+        
+        // Generate Ticket Report
+        function generateTicketReport() {
+            toastr.info('Generate ticket report functionality would be implemented here');
+        }
+        
+        // Apply Filters
+        function applyFilters() {
+            toastr.info('Apply filters functionality would be implemented here');
+        }
+        
+        // Clear Filters
+        function clearFilters() {
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('priorityFilter').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('assigneeFilter').value = '';
+            toastr.success('Filters cleared');
+        }
+        
+        // Bulk Assign
+        function bulkAssign() {
+            toastr.info('Bulk assign functionality would be implemented here');
+        }
+        
+        // Bulk Update
+        function bulkUpdate() {
+            toastr.info('Bulk update functionality would be implemented here');
+        }
+        
+        // Add Category
+        function addCategory() {
+            toastr.info('Add category functionality would be implemented here');
+        }
+        
+        // Configure Categories
+        function configureCategories() {
+            toastr.info('Configure categories functionality would be implemented here');
+        }
+        
+        // Add Priority
+        function addPriority() {
+            toastr.info('Add priority functionality would be implemented here');
+        }
+        
+        // Configure Priorities
+        function configurePriorities() {
+            toastr.info('Configure priorities functionality would be implemented here');
+        }
+        
+        // Add Agent
+        function addAgent() {
+            toastr.info('Add agent functionality would be implemented here');
+        }
+        
+        // Assign Agents
+        function assignAgents() {
+            toastr.info('Assign agents functionality would be implemented here');
+        }
+        
+        // Add Article
+        function addArticle() {
+            toastr.info('Add article functionality would be implemented here');
+        }
+        
+        // Import Articles
+        function importArticles() {
+            toastr.info('Import articles functionality would be implemented here');
+        }
+        
+        // Generate SLA Report
+        function generateSLAReport() {
+            toastr.info('Generate SLA report functionality would be implemented here');
+        }
+        
+        // Generate Agent Report
+        function generateAgentReport() {
+            toastr.info('Generate agent report functionality would be implemented here');
+        }
+        
+        // Download Report
+        function downloadReport(type) {
+            toastr.info('Download ' + type + ' report functionality would be implemented here');
+        }
+    </script>
+</body>
+</html>

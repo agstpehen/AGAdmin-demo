@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Management - AGAdmin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Charts replaced with CSS-based simple charts -->
+    
+    <!-- DataTables -->
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-tachometer-alt"></i> AGAdmin</h3>
+        </div>
+        
+        <ul class="components">
+            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            
+            <li>
+                <a href="#userManagement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-users"></i> User Management
+                </a>
+                <ul class="collapse list-unstyled" id="userManagement">
+                    <li><a href="users.html">Users</a></li>
+                    <li><a href="roles.html">Roles</a></li>
+                    <li><a href="permissions.html">Permissions</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <a href="#masterData" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-database"></i> Master Data
+                </a>
+                <ul class="collapse list-unstyled" id="masterData">
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="territories.html">Territories</a></li>
+                    <li><a href="stores.html">Stores</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <a href="#business" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-briefcase"></i> Business Modules
+                </a>
+                <ul class="collapse list-unstyled" id="business">
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="purchase.html">Purchase</a></li>
+                    <li><a href="customers.html">Customers</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="hr.html">HR</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <a href="#finance" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-chart-line"></i> Finance & Payroll
+                </a>
+                <ul class="collapse list-unstyled" id="finance">
+                    <li><a href="finance.html">Finance</a></li>
+                    <li><a href="payroll.html">Payroll</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="leave-management.html"><i class="fas fa-calendar-times"></i> Leave Management</a></li>
+            <li><a href="ticketing.html"><i class="fas fa-ticket-alt"></i> Ticketing System</a></li>
+            <li><a href="reports.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+            
+            <li>
+                <a href="#communication" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-comments"></i> Communication
+                </a>
+                <ul class="collapse list-unstyled" id="communication">
+                    <li><a href="notifications.html">Notifications</a></li>
+                    <li><a href="messages.html">Messages</a></li>
+                    <li><a href="announcements.html">Announcements</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="audit-logs.html"><i class="fas fa-clipboard-list"></i> Audit Logs</a></li>
+            <li><a href="ui-components.html"><i class="fas fa-palette"></i> UI Components</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content" id="content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+            <div class="container-fluid">
+                <button class="btn btn-link" id="sidebarCollapse">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">New order received</a></li>
+                            <li><a class="dropdown-item" href="#">Payment processed</a></li>
+                            <li><a class="dropdown-item" href="#">System maintenance</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> Admin User
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html">Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-shopping-cart"></i> Purchase Management</h2>
+                <div>
+                    <button class="btn btn-primary btn-sm me-2" onclick="addPurchase()">
+                        <i class="fas fa-plus"></i> Add Purchase
+                    </button>
+                    <button class="btn btn-success btn-sm me-2" onclick="refreshPurchaseTable()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-info btn-sm" onclick="exportPurchases()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Purchase Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card dashboard-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon primary mb-3">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <h4>156</h4>
+                            <p class="text-muted">Total Purchases</p>
+                            <small class="text-success"><i class="fas fa-arrow-up"></i> 8% from last month</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card dashboard-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon success mb-3">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <h4>$89,450</h4>
+                            <p class="text-muted">Total Value</p>
+                            <small class="text-success"><i class="fas fa-arrow-up"></i> 12% from last month</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card dashboard-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon warning mb-3">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <h4>23</h4>
+                            <p class="text-muted">Pending Orders</p>
+                            <small class="text-warning"><i class="fas fa-clock"></i> Requires attention</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card dashboard-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon danger mb-3">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h4>5</h4>
+                            <p class="text-muted">Overdue</p>
+                            <small class="text-danger"><i class="fas fa-arrow-down"></i> 2% from last month</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Purchase Chart -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="card dashboard-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Purchase Trends</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="purchaseTrendChart" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card dashboard-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Supplier Distribution</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="supplierChart" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Purchase Table -->
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Purchase Orders</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="purchaseTable">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Supplier</th>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Total</th>
+                                    <th>Order Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PO001</td>
+                                    <td>ABC Suppliers</td>
+                                    <td>Office Chairs</td>
+                                    <td>50</td>
+                                    <td>$120</td>
+                                    <td>$6,000</td>
+                                    <td>2024-01-15</td>
+                                    <td><span class="badge bg-success">Delivered</span></td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary" onclick="viewPurchase(1)" title="View">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-warning" onclick="editPurchase(1)" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger" onclick="deletePurchase(1)" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>PO002</td>
+                                    <td>XYZ Corp</td>
+                                    <td>Laptops</td>
+                                    <td>25</td>
+                                    <td>$800</td>
+                                    <td>$20,000</td>
+                                    <td>2024-01-14</td>
+                                    <td><span class="badge bg-warning">Pending</span></td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary" onclick="viewPurchase(2)" title="View">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-warning" onclick="editPurchase(2)" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger" onclick="deletePurchase(2)" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>PO003</td>
+                                    <td>Tech Solutions</td>
+                                    <td>Monitors</td>
+                                    <td>30</td>
+                                    <td>$300</td>
+                                    <td>$9,000</td>
+                                    <td>2024-01-13</td>
+                                    <td><span class="badge bg-info">Shipped</span></td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary" onclick="viewPurchase(3)" title="View">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-warning" onclick="editPurchase(3)" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger" onclick="deletePurchase(3)" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Purchase Modal -->
+    <div class="modal fade" id="purchaseModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="purchaseModalTitle">Add Purchase Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="purchaseForm">
+                        <input type="hidden" id="purchaseId" name="purchaseId">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="supplier" class="form-label">Supplier *</label>
+                                    <select class="form-select" id="supplier" name="supplier" required>
+                                        <option value="">Select Supplier</option>
+                                        <option value="ABC Suppliers">ABC Suppliers</option>
+                                        <option value="XYZ Corp">XYZ Corp</option>
+                                        <option value="Tech Solutions">Tech Solutions</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="product" class="form-label">Product *</label>
+                                    <input type="text" class="form-control" id="product" name="product" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="quantity" class="form-label">Quantity *</label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="unitPrice" class="form-label">Unit Price *</label>
+                                    <input type="number" step="0.01" class="form-control" id="unitPrice" name="unitPrice" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="total" class="form-label">Total</label>
+                                    <input type="number" step="0.01" class="form-control" id="total" name="total" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="orderDate" class="form-label">Order Date *</label>
+                                    <input type="date" class="form-control" id="orderDate" name="orderDate" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status *</label>
+                                    <select class="form-select" id="status" name="status" required>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Shipped">Shipped</option>
+                                        <option value="Delivered">Delivered</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Notes</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="savePurchase()">Save Purchase</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <!-- Layout Management -->
+    <script src="assets/js/layout.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#purchaseTable').DataTable({
+                responsive: true,
+                pageLength: 25,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                order: [[6, 'desc']], // Sort by date descending
+                columnDefs: [
+                    { orderable: false, targets: [8] } // Actions column
+                ]
+            });
+            
+            // Calculate total when quantity or unit price changes
+            $('#quantity, #unitPrice').on('input', function() {
+                const quantity = parseFloat($('#quantity').val()) || 0;
+                const unitPrice = parseFloat($('#unitPrice').val()) || 0;
+                const total = quantity * unitPrice;
+                $('#total').val(total.toFixed(2));
+            });
+        });
+        
+        // Charts are now initialized by layout.js
+        
+        // View Purchase
+        function viewPurchase(id) {
+            toastr.info('View purchase ' + id + ' functionality would be implemented here');
+        }
+        
+        // Edit Purchase
+        function editPurchase(id) {
+            $('#purchaseModalTitle').text('Edit Purchase Order');
+            $('#purchaseId').val(id);
+            $('#purchaseModal').modal('show');
+        }
+        
+        // Delete Purchase
+        function deletePurchase(id) {
+            Swal.fire({
+                title: 'Delete Purchase Order',
+                text: 'Are you sure you want to delete this purchase order?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    toastr.success('Purchase order deleted successfully');
+                }
+            });
+        }
+        
+        // Add Purchase
+        function addPurchase() {
+            $('#purchaseModalTitle').text('Add Purchase Order');
+            $('#purchaseForm')[0].reset();
+            $('#purchaseId').val('');
+            $('#purchaseModal').modal('show');
+        }
+        
+        // Save Purchase
+        function savePurchase() {
+            if ($('#purchaseForm')[0].checkValidity()) {
+                $('#purchaseModal').modal('hide');
+                toastr.success('Purchase order saved successfully');
+            } else {
+                toastr.error('Please fill in all required fields');
+            }
+        }
+        
+        // Refresh Purchase Table
+        function refreshPurchaseTable() {
+            toastr.success('Purchase table refreshed');
+        }
+        
+        // Export Purchases
+        function exportPurchases() {
+            toastr.info('Export functionality would be implemented here');
+        }
+    </script>
+</body>
+</html>
+
+
+

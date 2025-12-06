@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blank Page - AGAdmin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Charts replaced with CSS-based simple charts -->
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <style>
+        .blank-container {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .blank-icon {
+            font-size: 4rem;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        
+        .blank-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .blank-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+        
+        .blank-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-blank {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-blank:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .template-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+        
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .template-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .template-card:hover {
+            background: #e9ecef;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .template-icon {
+            font-size: 2rem;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        
+        .template-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .template-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .code-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .code-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .copy-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+        
+        .copy-btn.copied {
+            background: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-tachometer-alt"></i> AGAdmin</h3>
+        </div>
+        
+        <ul class="components">
+            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            
+            <li>
+                <a href="#userManagement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-users"></i> User Management
+                </a>
+                <ul class="collapse list-unstyled" id="userManagement">
+                    <li><a href="users.html">Users</a></li>
+                    <li><a href="roles.html">Roles</a></li>
+                    <li><a href="permissions.html">Permissions</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <a href="#masterData" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-database"></i> Master Data
+                </a>
+                <ul class="collapse list-unstyled" id="masterData">
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="territories.html">Territories</a></li>
+                    <li><a href="stores.html">Stores</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <a href="#business" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-briefcase"></i> Business Modules
+                </a>
+                <ul class="collapse list-unstyled" id="business">
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="purchase.html">Purchase</a></li>
+                    <li><a href="customers.html">Customers</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="hr.html">HR</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <a href="#finance" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-chart-line"></i> Finance & Payroll
+                </a>
+                <ul class="collapse list-unstyled" id="finance">
+                    <li><a href="finance.html">Finance</a></li>
+                    <li><a href="payroll.html">Payroll</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="leave-management.html"><i class="fas fa-calendar-times"></i> Leave Management</a></li>
+            <li><a href="ticketing.html"><i class="fas fa-ticket-alt"></i> Ticketing System</a></li>
+            <li><a href="reports.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+            
+            <li>
+                <a href="#communication" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-comments"></i> Communication
+                </a>
+                <ul class="collapse list-unstyled" id="communication">
+                    <li><a href="notifications.html">Notifications</a></li>
+                    <li><a href="messages.html">Messages</a></li>
+                    <li><a href="announcements.html">Announcements</a></li>
+                    <li><a href="calendar.html">Calendar</a></li>
+                    <li><a href="file-manager.html">File Manager</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="audit-logs.html"><i class="fas fa-clipboard-list"></i> Audit Logs</a></li>
+            <li><a href="ui-components.html"><i class="fas fa-palette"></i> UI Components</a></li>
+            <li><a href="activity-timeline.html"><i class="fas fa-history"></i> Activity Timeline</a></li>
+            <li><a href="performance-metrics.html"><i class="fas fa-chart-line"></i> Performance Metrics</a></li>
+            <li><a href="blank-page.html"><i class="fas fa-file-alt"></i> Blank Page</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content" id="content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+            <div class="container-fluid">
+                <button class="btn btn-link" id="sidebarCollapse">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">New order received</a></li>
+                            <li><a class="dropdown-item" href="#">Payment processed</a></li>
+                            <li><a class="dropdown-item" href="#">System maintenance</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> Admin User
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html">Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-file-alt"></i> Blank Page Template</h2>
+                <div>
+                    <button class="btn btn-primary btn-sm me-2" onclick="addContent()">
+                        <i class="fas fa-plus"></i> Add Content
+                    </button>
+                    <button class="btn btn-success btn-sm me-2" onclick="savePage()">
+                        <i class="fas fa-save"></i> Save Page
+                    </button>
+                    <button class="btn btn-info btn-sm" onclick="previewPage()">
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Blank Page Content -->
+            <div class="blank-container">
+                <div class="blank-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3 class="blank-title">Blank Page Template</h3>
+                <p class="blank-subtitle">
+                    This is a blank page template for developers to add custom modules and content. 
+                    Use this page as a starting point for creating new features.
+                </p>
+                
+                <div class="blank-actions">
+                    <button class="btn btn-primary btn-blank" onclick="addContent()">
+                        <i class="fas fa-plus me-2"></i>Add Content
+                    </button>
+                    <button class="btn btn-success btn-blank" onclick="savePage()">
+                        <i class="fas fa-save me-2"></i>Save Page
+                    </button>
+                    <button class="btn btn-info btn-blank" onclick="previewPage()">
+                        <i class="fas fa-eye me-2"></i>Preview
+                    </button>
+                    <button class="btn btn-warning btn-blank" onclick="resetPage()">
+                        <i class="fas fa-undo me-2"></i>Reset
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Template Examples -->
+            <div class="template-section">
+                <h5 class="mb-3"><i class="fas fa-puzzle-piece me-2"></i>Template Examples</h5>
+                <p class="text-muted">Choose from these common page templates to get started quickly.</p>
+                
+                <div class="template-grid">
+                    <div class="template-card" onclick="loadTemplate('dashboard')">
+                        <div class="template-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="template-title">Dashboard</div>
+                        <div class="template-description">KPI cards, charts, and summary widgets</div>
+                    </div>
+                    
+                    <div class="template-card" onclick="loadTemplate('table')">
+                        <div class="template-icon">
+                            <i class="fas fa-table"></i>
+                        </div>
+                        <div class="template-title">Data Table</div>
+                        <div class="template-description">Sortable table with search and pagination</div>
+                    </div>
+                    
+                    <div class="template-card" onclick="loadTemplate('form')">
+                        <div class="template-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="template-title">Form Page</div>
+                        <div class="template-description">Input fields with validation and submission</div>
+                    </div>
+                    
+                    <div class="template-card" onclick="loadTemplate('chart')">
+                        <div class="template-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="template-title">Chart Page</div>
+                        <div class="template-description">Data visualization with multiple chart types</div>
+                    </div>
+                    
+                    <div class="template-card" onclick="loadTemplate('profile')">
+                        <div class="template-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="template-title">Profile Page</div>
+                        <div class="template-description">User information and settings</div>
+                    </div>
+                    
+                    <div class="template-card" onclick="loadTemplate('gallery')">
+                        <div class="template-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="template-title">Gallery</div>
+                        <div class="template-description">Image grid with lightbox and filters</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Code Examples -->
+            <div class="code-section">
+                <div class="code-header">
+                    <h6 class="code-title"><i class="fas fa-code me-2"></i>Code Examples</h6>
+                    <button class="copy-btn" onclick="copyCode('basicHtml')">Copy</button>
+                </div>
+                
+                <div class="code-block" id="basicHtml">
+&lt;!-- Basic HTML Structure --&gt;
+&lt;div class="container-fluid"&gt;
+    &lt;div class="row"&gt;
+        &lt;div class="col-md-12"&gt;
+            &lt;div class="card"&gt;
+                &lt;div class="card-header"&gt;
+                    &lt;h5 class="card-title"&gt;Your Content Here&lt;/h5&gt;
+                &lt;/div&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;p&gt;Add your custom content here.&lt;/p&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+                </div>
+            </div>
+            
+            <!-- JavaScript Examples -->
+            <div class="code-section">
+                <div class="code-header">
+                    <h6 class="code-title"><i class="fas fa-code me-2"></i>JavaScript Examples</h6>
+                    <button class="copy-btn" onclick="copyCode('basicJs')">Copy</button>
+                </div>
+                
+                <div class="code-block" id="basicJs">
+// Basic JavaScript Functions
+$(document).ready(function() {
+    // Initialize your custom functionality here
+    console.log('Page loaded successfully');
+});
+
+// Example function
+function customFunction() {
+    toastr.success('Custom function executed');
+}
+
+// Example AJAX call
+function loadData() {
+    $.ajax({
+        url: '/api/data',
+        method: 'GET',
+        success: function(response) {
+            console.log('Data loaded:', response);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error loading data:', error);
+        }
+    });
+}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <!-- Layout Management -->
+    <script src="assets/js/layout.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize blank page
+            console.log('Blank page template loaded');
+        });
+        
+        function addContent() {
+            toastr.info('Add content functionality would be implemented here');
+        }
+        
+        function savePage() {
+            toastr.success('Page saved successfully');
+        }
+        
+        function previewPage() {
+            toastr.info('Preview functionality would be implemented here');
+        }
+        
+        function resetPage() {
+            Swal.fire({
+                title: 'Reset Page',
+                text: 'Are you sure you want to reset this page?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, reset it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    toastr.success('Page reset successfully');
+                }
+            });
+        }
+        
+        function loadTemplate(templateType) {
+            toastr.info(`Loading ${templateType} template...`);
+            // Template loading logic would be implemented here
+        }
+        
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+                
+                toastr.success('Code copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                toastr.error('Failed to copy code');
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+

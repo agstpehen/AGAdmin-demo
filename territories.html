@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Territories Management - AGAdmin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- DataTables -->
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .navbar {
+            background: white !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .map-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-tachometer-alt"></i> AGAdmin</h3>
+            <button type="button" id="sidebarCollapse" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <ul class="list-unstyled components">
+            <!-- Dashboard -->
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            
+            <!-- User Management -->
+            <li>
+                <a href="#userManagement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-users"></i> User Management
+                </a>
+                <ul class="collapse list-unstyled" id="userManagement">
+                    <li><a href="users.html">Users</a></li>
+                    <li><a href="roles.html">Roles</a></li>
+                    <li><a href="permissions.html">Permissions</a></li>
+                </ul>
+            </li>
+            
+            <!-- Master Data -->
+            <li class="active">
+                <a href="#masterData" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-database"></i> Master Data
+                </a>
+                <ul class="collapse list-unstyled" id="masterData">
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="territories.html">Territories</a></li>
+                    <li><a href="stores.html">Stores</a></li>
+                </ul>
+            </li>
+            
+            <!-- Business Modules -->
+            <li>
+                <a href="#business" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-briefcase"></i> Business Modules
+                </a>
+                <ul class="collapse list-unstyled" id="business">
+                    <li><a href="sales.html">Sales</a></li>
+                    <li><a href="inventory.html">Inventory</a></li>
+                    <li><a href="customers.html">Customers</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="hr.html">HR Management</a></li>
+                </ul>
+            </li>
+            
+            <!-- Finance & Payroll -->
+            <li>
+                <a href="#finance" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-chart-line"></i> Finance & Payroll
+                </a>
+                <ul class="collapse list-unstyled" id="finance">
+                    <li><a href="finance.html">Finance</a></li>
+                    <li><a href="payroll.html">Payroll</a></li>
+                </ul>
+            </li>
+            
+            <!-- Leave Management -->
+            <li>
+                <a href="leave-management.html">
+                    <i class="fas fa-calendar-alt"></i> Leave Management
+                </a>
+            </li>
+            
+            <!-- Ticketing System -->
+            <li>
+                <a href="ticketing.html">
+                    <i class="fas fa-ticket-alt"></i> Ticketing System
+                </a>
+            </li>
+            
+            <!-- Reports -->
+            <li>
+                <a href="reports.html">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+            </li>
+            
+            <!-- Communication -->
+            <li>
+                <a href="#communication" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-comments"></i> Communication
+                </a>
+                <ul class="collapse list-unstyled" id="communication">
+                    <li><a href="notifications.html">Notifications</a></li>
+                    <li><a href="messages.html">Messages</a></li>
+                    <li><a href="announcements.html">Announcements</a></li>
+                </ul>
+            </li>
+            
+            <!-- Settings -->
+            <li>
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            
+            <!-- Audit Logs -->
+            <li>
+                <a href="audit-logs.html">
+                    <i class="fas fa-history"></i> Audit Logs
+                </a>
+            </li>
+            
+            <!-- UI Components -->
+            <li>
+                <a href="ui-components.html">
+                    <i class="fas fa-palette"></i> UI Components
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <!-- Page Content -->
+    <div id="content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-info">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="navbar-nav ms-auto">
+                    <!-- Dark Mode Toggle -->
+                    <div class="nav-item me-3">
+                        <button class="btn btn-outline-secondary" id="darkModeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Language Selector -->
+                    <div class="nav-item me-3">
+                        <select class="form-select form-select-sm" id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="nav-item dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger" id="notificationCount">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+                            <li><a class="dropdown-item" href="#">Territory updated</a></li>
+                            <li><a class="dropdown-item" href="#">New territory added</a></li>
+                            <li><a class="dropdown-item" href="#">Territory boundary changed</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="assets/images/avatar.jpg" alt="User" class="rounded-circle" width="30" height="30">
+                            <span class="ms-2">Admin User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Territories Management</h2>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#territoryModal">
+                <i class="fas fa-plus"></i> Add Territory
+            </button>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Territory Map -->
+                <div class="map-container">
+                    <div class="text-center">
+                        <i class="fas fa-map fa-3x mb-3"></i>
+                        <h5>Territory Map</h5>
+                        <p>Interactive map showing territory boundaries and assignments</p>
+                        <button class="btn btn-outline-primary" onclick="openMapView()">
+                            <i class="fas fa-expand"></i> Open Full Map
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <!-- Territory Statistics -->
+                <div class="table-container">
+                    <h5><i class="fas fa-chart-pie"></i> Territory Statistics</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="text-center p-3 border rounded">
+                                <h4 class="text-primary">12</h4>
+                                <small>Total Territories</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-center p-3 border rounded">
+                                <h4 class="text-success">8</h4>
+                                <small>Active Territories</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="text-center p-3 border rounded">
+                                <h4 class="text-warning">3</h4>
+                                <small>Pending Assignment</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-center p-3 border rounded">
+                                <h4 class="text-info">156</h4>
+                                <small>Total Customers</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Territories Table -->
+        <div class="table-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5>All Territories</h5>
+                <div>
+                    <button class="btn btn-outline-primary btn-sm me-2" onclick="refreshTerritories()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="exportTerritories()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover" id="territoriesTable">
+                    <thead>
+                        <tr>
+                            <th>Territory ID</th>
+                            <th>Name</th>
+                            <th>Region</th>
+                            <th>Manager</th>
+                            <th>Customers</th>
+                            <th>Area (sq km)</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TER001</td>
+                            <td><strong>North Region</strong></td>
+                            <td>North</td>
+                            <td>John Smith</td>
+                            <td>45</td>
+                            <td>1,250</td>
+                            <td><span class="badge bg-success">Active</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewTerritory(1)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editTerritory(1)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="assignManager(1)" title="Assign Manager">
+                                        <i class="fas fa-user-plus"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="deleteTerritory(1)" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>TER002</td>
+                            <td><strong>South Region</strong></td>
+                            <td>South</td>
+                            <td>Jane Doe</td>
+                            <td>38</td>
+                            <td>980</td>
+                            <td><span class="badge bg-success">Active</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewTerritory(2)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editTerritory(2)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="assignManager(2)" title="Assign Manager">
+                                        <i class="fas fa-user-plus"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="deleteTerritory(2)" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>TER003</td>
+                            <td><strong>East Region</strong></td>
+                            <td>East</td>
+                            <td>Mike Johnson</td>
+                            <td>42</td>
+                            <td>1,100</td>
+                            <td><span class="badge bg-success">Active</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewTerritory(3)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editTerritory(3)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="assignManager(3)" title="Assign Manager">
+                                        <i class="fas fa-user-plus"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="deleteTerritory(3)" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>TER004</td>
+                            <td><strong>West Region</strong></td>
+                            <td>West</td>
+                            <td>Sarah Wilson</td>
+                            <td>31</td>
+                            <td>850</td>
+                            <td><span class="badge bg-success">Active</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewTerritory(4)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editTerritory(4)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="assignManager(4)" title="Assign Manager">
+                                        <i class="fas fa-user-plus"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="deleteTerritory(4)" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>TER005</td>
+                            <td><strong>Central Region</strong></td>
+                            <td>Central</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>750</td>
+                            <td><span class="badge bg-warning">Pending</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary" onclick="viewTerritory(5)" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editTerritory(5)" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="assignManager(5)" title="Assign Manager">
+                                        <i class="fas fa-user-plus"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="deleteTerritory(5)" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Territory Modal -->
+    <div class="modal fade" id="territoryModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="territoryModalTitle">Add New Territory</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="territoryForm">
+                        <input type="hidden" id="territoryId" name="territoryId">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="territoryName" class="form-label">Territory Name *</label>
+                                    <input type="text" class="form-control" id="territoryName" name="territoryName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="territoryCode" class="form-label">Territory Code *</label>
+                                    <input type="text" class="form-control" id="territoryCode" name="territoryCode" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="territoryRegion" class="form-label">Region *</label>
+                                    <select class="form-select" id="territoryRegion" name="territoryRegion" required>
+                                        <option value="">Select Region</option>
+                                        <option value="north">North</option>
+                                        <option value="south">South</option>
+                                        <option value="east">East</option>
+                                        <option value="west">West</option>
+                                        <option value="central">Central</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="territoryManager" class="form-label">Territory Manager</label>
+                                    <select class="form-select" id="territoryManager" name="territoryManager">
+                                        <option value="">Select Manager</option>
+                                        <option value="1">John Smith</option>
+                                        <option value="2">Jane Doe</option>
+                                        <option value="3">Mike Johnson</option>
+                                        <option value="4">Sarah Wilson</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="territoryArea" class="form-label">Area (sq km)</label>
+                                    <input type="number" class="form-control" id="territoryArea" name="territoryArea" step="0.01">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="territoryPopulation" class="form-label">Population</label>
+                                    <input type="number" class="form-control" id="territoryPopulation" name="territoryPopulation">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="territoryDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="territoryDescription" name="territoryDescription" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="territoryStatus" class="form-label">Status *</label>
+                                    <select class="form-select" id="territoryStatus" name="territoryStatus" required>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                        <option value="pending">Pending</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="territoryPriority" class="form-label">Priority</label>
+                                    <select class="form-select" id="territoryPriority" name="territoryPriority">
+                                        <option value="high">High</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="low">Low</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTerritory()">Save Territory</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Assign Manager Modal -->
+    <div class="modal fade" id="assignManagerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Assign Territory Manager</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="assignManagerForm">
+                        <input type="hidden" id="assignTerritoryId" name="territoryId">
+                        
+                        <div class="mb-3">
+                            <label for="selectedManager" class="form-label">Select Manager *</label>
+                            <select class="form-select" id="selectedManager" name="selectedManager" required>
+                                <option value="">Select Manager</option>
+                                <option value="1">John Smith</option>
+                                <option value="2">Jane Doe</option>
+                                <option value="3">Mike Johnson</option>
+                                <option value="4">Sarah Wilson</option>
+                                <option value="5">David Brown</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="assignmentDate" class="form-label">Assignment Date *</label>
+                            <input type="date" class="form-control" id="assignmentDate" name="assignmentDate" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="assignmentNotes" class="form-label">Notes</label>
+                            <textarea class="form-control" id="assignmentNotes" name="assignmentNotes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveManagerAssignment()">Assign Manager</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <!-- Layout Management -->
+    <script src="assets/js/layout.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#territoriesTable').DataTable({
+                responsive: true,
+                pageLength: 25,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                order: [[0, 'asc']],
+                columnDefs: [
+                    { orderable: false, targets: [7] } // Actions column
+                ]
+            });
+            
+            // Set today's date as default
+            $('#assignmentDate').val(new Date().toISOString().split('T')[0]);
+        });
+        
+        // View Territory
+        function viewTerritory(id) {
+            toastr.info('View territory ' + id + ' functionality would be implemented here');
+        }
+        
+        // Edit Territory
+        function editTerritory(id) {
+            $('#territoryModalTitle').text('Edit Territory');
+            $('#territoryId').val(id);
+            $('#territoryModal').modal('show');
+        }
+        
+        // Assign Manager
+        function assignManager(id) {
+            $('#assignTerritoryId').val(id);
+            $('#assignManagerModal').modal('show');
+        }
+        
+        // Delete Territory
+        function deleteTerritory(id) {
+            Swal.fire({
+                title: 'Delete Territory',
+                text: 'Are you sure you want to delete this territory?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    toastr.success('Territory deleted successfully');
+                }
+            });
+        }
+        
+        // Save Territory
+        function saveTerritory() {
+            if ($('#territoryForm')[0].checkValidity()) {
+                $('#territoryModal').modal('hide');
+                toastr.success('Territory saved successfully');
+            } else {
+                toastr.error('Please fill in all required fields');
+            }
+        }
+        
+        // Save Manager Assignment
+        function saveManagerAssignment() {
+            if ($('#assignManagerForm')[0].checkValidity()) {
+                $('#assignManagerModal').modal('hide');
+                toastr.success('Manager assigned successfully');
+            } else {
+                toastr.error('Please fill in all required fields');
+            }
+        }
+        
+        // Open Map View
+        function openMapView() {
+            toastr.info('Full map view functionality would be implemented here');
+        }
+        
+        // Refresh Territories
+        function refreshTerritories() {
+            toastr.success('Territories refreshed successfully');
+        }
+        
+        // Export Territories
+        function exportTerritories() {
+            toastr.info('Export functionality would be implemented here');
+        }
+    </script>
+</body>
+</html>
